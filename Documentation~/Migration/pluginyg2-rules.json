@@ -1,0 +1,42 @@
+{
+  "source": "PluginYG2",
+  "target": "JTL SDK 1.0.0",
+  "notes": "Machine readable part of PluginYG2.md. 'simple' rules are safe to apply automatically, the rest need a human or a smarter pass.",
+  "placeholders": {
+    "{saves}": "static wrapper class of the game save object, for example SuikaSaves",
+    "{module}": "module the call belongs to: Data, Ads, Language, Leaderboards"
+  },
+  "rules": [
+    { "pattern": "\\busing YG;", "replacement": "using JTLStudio.SDK;", "simple": true },
+    { "pattern": "\\bYG2\\.saves\\.", "replacement": "{saves}.Data.", "simple": true, "note": "field names may be renamed at the same time" },
+    { "pattern": "\\bYG2\\.SaveProgress\\(\\);", "replacement": "{saves}.Save();", "simple": true },
+    { "pattern": "\\bYG2\\.isSDKEnabled\\b", "replacement": "{saves}.IsReady", "simple": false, "note": "means 'saves are available' in most games; for other modules use JTLSDK.<module>.IsReady" },
+    { "pattern": "\\bYG2\\.onGetSDKData \\+= (\\w+);", "replacement": "JTLSDK.Data.Loaded += $1;", "simple": true },
+    { "pattern": "\\bYG2\\.onGetSDKData -= (\\w+);", "replacement": "JTLSDK.Data.Loaded -= $1;", "simple": true },
+    { "pattern": "\\bYG2\\.onSwitchLang \\+= (\\w+);\\s*\\n\\s*YG2\\.onCorrectLang \\+= \\1;", "replacement": "JTLSDK.Language.Changed += $1;", "simple": false, "note": "handler signature changes from Action<string> to Action<Language>" },
+    { "pattern": "\\bYG2\\.onSwitchLang -= (\\w+);\\s*\\n\\s*YG2\\.onCorrectLang -= \\1;", "replacement": "JTLSDK.Language.Changed -= $1;", "simple": false },
+    { "pattern": "private void (\\w+)\\(string language\\)", "replacement": "private void $1(Language language)", "simple": false, "note": "only for former onSwitchLang handlers" },
+    { "pattern": "\\bYG2\\.lang\\b", "replacement": "new LanguageCodes().ToCode(JTLSDK.Language.Current)", "simple": false, "note": "cache LanguageCodes in a static field" },
+    { "pattern": "\\bYG2\\.InterstitialAdvShow\\(\\);", "replacement": "JTLSDK.Ads.ShowInterstitial();", "simple": true },
+    { "pattern": "\\bYG2\\.RewardedAdvShow\\(([^,]+), (\\w+)\\);", "replacement": "JTLSDK.Ads.ShowRewarded($1, result => { if (result == AdResult.Rewarded) { $2(); } });", "simple": false, "note": "onCloseRewardedAdv and onErrorRewardedAdv subscriptions are deleted, the single callback replaces them" },
+    { "pattern": "\\bYG2\\.nowAdsShow\\b", "replacement": "JTLSDK.Ads.IsShowing", "simple": true },
+    { "pattern": "\\bYG2\\.isTimerAdvCompleted\\b", "replacement": "true", "simple": false, "note": "the SDK keeps the interstitial interval itself and answers NotShown inside it" },
+    { "pattern": "\\bYG2\\.envir\\.isMobile \\|\\| YG2\\.envir\\.isTablet\\b", "replacement": "JTLSDK.Device.IsMobile", "simple": true },
+    { "pattern": "\\bYG2\\.envir\\.isMobile\\b", "replacement": "JTLSDK.Device.IsMobile", "simple": true },
+    { "pattern": "\\bYG2\\.infoYG\\.Simulation\\.device\\b", "replacement": "JTLSDK.Device.Type", "simple": false, "note": "the editor only branch can be deleted, the Game view overlay switches the device" },
+    { "pattern": "\\bYG2\\.MetricaSend\\(", "replacement": "", "simple": false, "note": "no analytics module in the SDK yet" }
+  ],
+  "deletes": [
+    { "what": "define symbols of optional PluginYG2 modules", "pattern": "#if (EnvirData_yg|Leaderboard_yg|Auth_yg|Storage_yg|Metrica_yg)[\\s\\S]*?#endif", "note": "keep the body, drop the guard" },
+    { "what": "SavesYG partial class file", "pattern": "partial class SavesYG" },
+    { "what": "plugin folder", "path": "Assets/PluginYourGames" },
+    { "what": "plugin WebGL template", "path": "Assets/WebGLTemplates/YandexGames" }
+  ],
+  "manual": [
+    "Build the save wrapper from the SavesYG partial class and route every field through it.",
+    "Add the bootstrap with JTLSDK.Create, JTLSDK.Data.Loaded and JTLSDK.GameEvents.GameReady.",
+    "Create the platform configuration in the SDK window, install the template, move languages, leaderboards, products and flags into it.",
+    "Remove plugin objects and dead service objects from the scenes.",
+    "Import old player saves from the plugin key if the game is already published."
+  ]
+}

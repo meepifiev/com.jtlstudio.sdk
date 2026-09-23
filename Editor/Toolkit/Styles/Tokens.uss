@@ -1,0 +1,83 @@
+.jtl-root {
+    --jtl-bg: #0A0F1C;
+    --jtl-surface: #111A2C;
+    --jtl-raised: #17223A;
+    --jtl-raised-hover: #1D2B45;
+    --jtl-raised-pressed: #101A2C;
+    --jtl-field-bg: #0E1626;
+    --jtl-field-bg-focus: #111C31;
+    --jtl-field-bg-disabled: #0D1524;
+    --jtl-row-active: #16223A;
+    --jtl-border: #1E2B45;
+    --jtl-border-strong: #2A3A5C;
+    --jtl-border-hover: #3A4E76;
+    --jtl-text: #E9EEF8;
+    --jtl-text-secondary: #93A2BF;
+    --jtl-text-muted: #64748B;
+    --jtl-text-on-accent: #FFFFFF;
+    --jtl-accent: #4C86FF;
+    --jtl-accent-strong: #2B6CF6;
+    --jtl-accent-strong-border: #2B6CF6;
+    --jtl-accent-hover: #3D7BFF;
+    --jtl-accent-pressed: #215AD6;
+    --jtl-accent-border: #2E4A80;
+    --jtl-accent-surface: #16233F;
+    --jtl-success: #3FBF7F;
+    --jtl-success-border: #1E4634;
+    --jtl-success-surface: #10251C;
+    --jtl-warning: #E0A83C;
+    --jtl-warning-border: #4A3A1E;
+    --jtl-warning-surface: #2A2213;
+    --jtl-error: #E4605A;
+    --jtl-error-border: #4A2229;
+    --jtl-error-surface: #2A1720;
+    --jtl-danger-fill: #8E2F2B;
+    --jtl-danger-border: #B14640;
+    --jtl-danger-hover: #9E4039;
+    --jtl-danger-pressed: #7A3029;
+    --jtl-switch-off: #26344F;
+    --jtl-switch-knob-off: #7E8DA8;
+    --jtl-scrollbar: #2A3A5C;
+    --jtl-font-size-title: 21px;
+    --jtl-font-size-card: 15px;
+    --jtl-font-size-body: 13px;
+    --jtl-font-size-secondary: 12px;
+    --jtl-font-size-caption: 11px;
+    --jtl-radius-badge: 4px;
+    --jtl-radius-field: 9px;
+    --jtl-radius-card: 14px;
+    --jtl-radius-toggle: 9px;
+    --jtl-space-1: 4px;
+    --jtl-space-2: 8px;
+    --jtl-space-3: 12px;
+    --jtl-space-4: 16px;
+    --jtl-space-6: 24px;
+    --jtl-height-toggle: 18px;
+    --jtl-height-compact: 26px;
+    --jtl-height-control: 30px;
+    --jtl-height-row: 32px;
+    --jtl-height-top-bar: 48px;
+    --jtl-height-status-bar: 28px;
+    --jtl-sidebar-width: 236px;
+    --jtl-sidebar-width-collapsed: 52px;
+    --jtl-label-width: 190px;
+    --jtl-label-width-card: 150px;
+}
+
+.jtl-root {
+    flex-grow: 1;
+    flex-direction: row;
+    min-width: 0;
+    background-color: var(--jtl-bg);
+    color: var(--jtl-text);
+    font-size: 13px;
+    -unity-font-style: normal;
+}
+
+.jtl-root .unity-label {
+    color: var(--jtl-text);
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    -unity-text-align: middle-left;
+}

@@ -1,0 +1,13 @@
+{
+  "modules": [
+    {
+      "id": "localization",
+      "name": "Localization",
+      "package": "com.jtlstudio.sdk.localization",
+      "repository": "meepifiev/com.jtlstudio.sdk.localization",
+      "path": "",
+      "requires": "1.0.0",
+      "platforms": []
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:jtl="JTLStudio.SDK.Editor.Toolkit.Components">
+    <ui:VisualElement class="jtl-column jtl-vstack-16">
+        <jtl:SectionHeader title-key="analyzer.title" />
+        <ui:VisualElement name="analyzer-body" class="jtl-column jtl-vstack-16" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,1064 @@
+<meta charset="utf-8">
+<title>JTL SDK Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#080D18; --surface:#0F1728; --raise:#16203A; --line:#1D2A45; --line2:#2A3A5C;
+  --text:#E9EEF8; --muted:#94A3C0; --dim:#63718F;
+  --accent:#2B6CF6; --accent-hi:#5B93FF; --accent-soft:#13264A;
+  --ok:#3FBF7F; --warn:#E0A83C; --err:#E4605A;
+  --code:#0B1424; --sel:rgba(43,108,246,.28);
+  --sora:'Sora',system-ui,sans-serif;
+  --inter:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --nav:268px; --toc:210px; --bar:60px;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);overflow-x:clip}
+body{margin:0;color:var(--text);font-family:var(--inter);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:var(--sel)}
+a{color:var(--accent-hi);text-decoration:none}
+a:hover{color:#8FB6FF}
+h1,h2,h3,h4{font-family:var(--sora);font-weight:600;letter-spacing:-.02em;text-wrap:balance;margin:0}
+code,pre,kbd{font-family:var(--mono)}
+:focus-visible{outline:2px solid var(--accent-hi);outline-offset:2px;border-radius:6px}
+p code,li code,td code,.lead code{font-size:.86em;color:#B7CEF7;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:nowrap}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;height:var(--bar);background:rgba(8,13,24,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar-in{position:relative;height:100%;max-width:1560px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:0 32px}
+.bar img.logo{height:40px;width:auto;display:block}
+.ver{font-family:var(--mono);font-size:11px;color:var(--muted);border:1px solid var(--line2);border-radius:999px;padding:3px 9px;white-space:nowrap}
+.bar nav{display:flex;gap:4px;margin-left:10px}
+.bar nav a{color:var(--muted);font-size:13.5px;padding:7px 11px;border-radius:9px}
+.bar nav a:hover{color:var(--text);background:var(--raise)}
+.grow{flex:1}
+.search{position:relative;display:flex;align-items:center;gap:8px;width:260px;height:34px;padding:0 10px 0 12px;border:1px solid var(--line2);border-radius:10px;background:var(--code);color:var(--dim);transition:width .2s ease,border-color .15s}
+.search:hover{border-color:#39507c}
+.search:focus-within{width:340px;border-color:var(--accent);color:var(--muted)}
+.search svg{flex-shrink:0}
+.search input{flex:1;min-width:0;height:100%;border:0;background:transparent;color:var(--text);font-family:inherit;font-size:13px;outline:none}
+.search input::placeholder{color:var(--dim)}
+.search input::-webkit-search-cancel-button{display:none}
+.search > kbd{font-size:10.5px;border:1px solid var(--line2);border-radius:5px;padding:1px 5px;color:var(--muted);white-space:nowrap}
+.search:focus-within > kbd{visibility:hidden}
+.search .shut{display:none;width:26px;height:26px;border:0;border-radius:7px;background:transparent;color:var(--muted);cursor:pointer;align-items:center;justify-content:center}
+.searchbtn{display:none}
+.results{position:absolute;top:calc(100% + 8px);right:0;width:min(480px,calc(100vw - 32px));max-height:min(64vh,560px);overflow-y:auto;border:1px solid var(--line2);border-radius:14px;background:var(--surface);box-shadow:0 18px 50px rgba(0,0,0,.45);padding:6px;z-index:70;animation:rise .16s cubic-bezier(.2,.7,.3,1)}
+.results[hidden]{display:none}
+.results a{display:block;padding:10px 12px;border-radius:10px;color:var(--text)}
+.results a.hit,.results a:hover{background:var(--raise)}
+.results .where{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}
+.results .title{display:block;font-family:var(--sora);font-size:14px;font-weight:600}
+.results .snippet{display:block;font-size:12.5px;line-height:1.5;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}
+.results .snippet.code{font-family:var(--mono);font-size:11.5px;color:#B7CEF7}
+.results mark{background:rgba(91,147,255,.22);color:var(--text);border-radius:3px;padding:0 1px}
+.results .empty{padding:14px 12px;color:var(--dim);font-size:13.5px}
+.results .foot{display:flex;gap:14px;padding:8px 12px 4px;border-top:1px solid var(--line);margin-top:4px;font-size:11px;color:var(--dim)}
+.results .foot kbd{font-size:10px;color:var(--muted);border:1px solid var(--line2);border-radius:4px;padding:0 4px;margin-right:4px}
+.found{animation:found 1.6s ease-out}
+@keyframes found{0%,30%{background:rgba(43,108,246,.16);box-shadow:0 0 0 8px rgba(43,108,246,.16)}100%{background:transparent;box-shadow:0 0 0 8px transparent}}
+.ghost{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:10px;border:1px solid var(--line2);background:var(--raise);color:var(--text);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer}
+.ghost:hover{border-color:#39507c;color:var(--text)}
+.burger{display:none}
+
+.aiwrap{position:relative;padding:1.5px;border-radius:999px;overflow:hidden;isolation:isolate;flex-shrink:0}
+.aiwrap::before{content:"";position:absolute;left:50%;top:50%;width:260%;aspect-ratio:1;translate:-50% -50%;background:conic-gradient(from 0deg,#2B6CF6,#5B93FF,#67E8F9,#A78BFA,#2B6CF6);animation:orbit 4.2s linear infinite;z-index:0}
+.aibtn{position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 15px;border:0;border-radius:999px;background:linear-gradient(180deg,#14213B,#101A2E);color:var(--text);font-family:var(--sora);font-size:13px;font-weight:600;cursor:pointer;overflow:hidden}
+.aibtn::after{content:"";position:absolute;inset:0;translate:-120% 0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.16) 50%,transparent 70%);animation:sweep 4.2s ease-in-out infinite}
+.aibtn svg{color:#9CC6FF;display:block}
+.aiwrap:hover::before{animation-duration:1.5s}
+@keyframes orbit{to{rotate:360deg}}
+@keyframes sweep{0%,55%{translate:-120% 0}85%,100%{translate:120% 0}}
+
+.shell{display:grid;grid-template-columns:var(--nav) minmax(0,1fr) var(--toc);max-width:1560px;margin:0 auto}
+.side{border-right:1px solid var(--line);padding:26px 16px 60px;position:sticky;top:calc(var(--bar) + env(safe-area-inset-top,0px));height:calc(100vh - var(--bar));overflow-y:auto}
+.side,.toc,.results{scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.side h5{font-family:var(--inter);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:20px 0 7px 10px}
+.side h5:first-child{margin-top:0}
+.side a{display:block;color:var(--muted);font-size:13.5px;padding:6px 10px;border-radius:8px;border-left:2px solid transparent}
+.side a:hover{color:var(--text);background:var(--raise)}
+.side a.on{color:var(--text);background:linear-gradient(90deg,rgba(43,108,246,.18),transparent);border-left-color:var(--accent);font-weight:500}
+.main{padding:40px 44px 100px;min-width:0}
+.toc{padding:36px 20px 60px;position:sticky;top:calc(var(--bar) + env(safe-area-inset-top,0px));height:calc(100vh - var(--bar));overflow-y:auto}
+.toc b{display:block;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.toc a{display:block;color:var(--muted);font-size:13px;padding:4px 0 4px 12px;border-left:1px solid var(--line)}
+.toc a:hover,.toc a.on{color:var(--text);border-left-color:var(--accent)}
+
+.hero{position:relative;overflow:hidden;border:1px solid #23375E;border-radius:20px;background:linear-gradient(118deg,#0A1730 0%,#0F2C55 48%,#14417A 100%);padding:30px 32px;margin-bottom:44px;container-type:inline-size}
+.hero .streak{position:absolute;top:-40%;bottom:-40%;transform:skewX(-22deg);pointer-events:none}
+.hero .s1{left:46%;width:120px;background:linear-gradient(90deg,transparent,rgba(120,170,255,.10))}
+.hero .s2{left:56%;width:52px;background:linear-gradient(90deg,rgba(120,170,255,.04),rgba(120,170,255,.13))}
+.hero .s3{left:64%;width:240px;background:linear-gradient(90deg,transparent,rgba(120,170,255,.07))}
+.hero-in{position:relative;display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.hero-copy{flex:1 1 320px;min-width:0}
+.found{border-radius:10px}
+.hero h1{font-size:clamp(26px,3.4vw,38px);line-height:1.1;font-weight:700}
+.hero h1 span{color:var(--accent-hi)}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.btn{display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 22px;border-radius:12px;font-family:var(--sora);font-size:14.5px;font-weight:600;cursor:pointer;border:1px solid transparent}
+.btn-p{background:var(--accent);color:#fff}
+.btn-p:hover{background:#3D7BFF;color:#fff}
+.btn-s{background:rgba(12,24,48,.72);border-color:#2E4B7E;color:#DCE7FB}
+.btn-s:hover{border-color:#4470B8;color:#fff}
+.tiles{display:flex;gap:12px;flex-shrink:0}
+.tile{width:116px;padding:16px 10px;border-radius:18px;text-align:center;border:1px solid rgba(150,190,255,.32);background:linear-gradient(160deg,rgba(28,72,140,.92),rgba(13,34,72,.92));transform:perspective(900px) rotateY(-14deg);transition:transform .35s ease}
+.tile:hover{transform:perspective(900px) rotateY(-6deg) translateY(-4px)}
+.tile:last-child{margin-top:18px}
+.tile img{width:40px;height:40px;border-radius:12px;display:block;margin:0 auto 10px}
+.tile b{display:block;font-family:var(--sora);font-size:12.5px;line-height:1.35;color:#E4EEFF}
+@container (max-width:620px){
+  .tiles{width:100%}
+  .tile{flex:1;width:auto;display:flex;align-items:center;gap:10px;padding:10px 12px;text-align:left;transform:none}
+  .tile:hover{transform:none}
+  .tile:last-child{margin-top:0}
+  .tile img{width:28px;height:28px;border-radius:8px;margin:0}
+}
+
+section,section h2,section h3{scroll-margin-top:calc(var(--bar) + 20px)}
+section{margin-bottom:60px}
+section > h2{font-size:26px;margin-bottom:6px}
+section > h2 + p.lead{color:var(--muted);margin:0 0 22px;max-width:66ch}
+h3{font-size:17px;margin:30px 0 10px}
+p{margin:0 0 14px;max-width:72ch}
+.plain{margin:0 0 16px;padding-left:20px;color:var(--muted);max-width:72ch}
+.plain li{margin-bottom:6px}
+.plain b{color:var(--text);font-weight:500}
+
+.steps{display:grid;gap:18px}
+.step{display:grid;grid-template-columns:34px minmax(0,1fr);gap:16px;align-items:start}
+.step .n{width:34px;height:34px;border-radius:11px;background:var(--raise);border:1px solid var(--line2);display:grid;place-items:center;font-family:var(--mono);font-size:13px;color:var(--accent-hi)}
+.step h3{margin:4px 0 8px}
+
+.tabs{display:flex;gap:4px;margin-bottom:-1px;position:relative;z-index:1;flex-wrap:wrap}
+.tabs button{font-family:var(--inter);font-size:12.5px;font-weight:500;color:var(--muted);background:transparent;border:1px solid transparent;border-bottom:0;border-radius:10px 10px 0 0;padding:8px 14px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--text);background:var(--code);border-color:var(--line)}
+.codebox{position:relative;border:1px solid var(--line);border-radius:0 12px 12px 12px;background:var(--code);overflow:hidden;margin-bottom:18px}
+.codebox.solo{border-radius:12px}
+.codebox > .copy:first-child + pre{padding-top:34px}
+.codebox .file{display:flex;align-items:center;gap:8px;padding:9px 16px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--dim)}
+.codebox .file b{color:var(--muted);font-weight:500}
+.codebox pre{margin:0;padding:16px 18px;overflow-x:auto;font-size:13px;line-height:1.7}
+.copy{position:absolute;top:6px;right:8px;height:26px;padding:0 10px;border-radius:8px;border:1px solid var(--line2);background:var(--raise);color:var(--muted);font-family:var(--inter);font-size:11.5px;cursor:pointer;opacity:.65;transition:opacity .15s}
+.codebox:hover .copy,.copy:focus-visible{opacity:1}
+.copy.done{color:var(--ok);border-color:#2A5C44;opacity:1}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface);margin-bottom:18px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:10px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td{color:var(--muted)}
+td:first-child{color:var(--text)}
+td.api{white-space:nowrap;font-family:var(--mono);font-size:12.5px;color:#B7CEF7}
+td.yes{color:var(--ok);white-space:nowrap}
+td.no{color:var(--dim);white-space:nowrap}
+.plat{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.plat img{width:20px;height:20px;border-radius:6px}
+
+.note{display:flex;gap:12px;border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:12px;background:var(--surface);padding:14px 16px;font-size:13.5px;color:var(--muted);margin-bottom:18px;max-width:78ch}
+.note.info{border-left-color:var(--accent)}
+.note b{color:var(--text);font-weight:600}
+.note svg{flex-shrink:0;margin-top:3px}
+
+footer{border-top:1px solid var(--line);padding:28px 44px 60px;color:var(--dim);font-size:13px;display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+footer img{height:24px;opacity:.85}
+
+.scrim{position:fixed;inset:0;z-index:90;background:rgba(4,8,16,.72);backdrop-filter:blur(4px);display:grid;place-items:start center;padding:12vh 16px 16px}
+.sheet{width:min(560px,100%);max-height:76vh;overflow-y:auto;border:1px solid var(--line2);border-radius:18px;background:var(--surface);padding:22px;animation:rise .22s cubic-bezier(.2,.7,.3,1)}
+@keyframes rise{from{opacity:0;translate:0 12px}}
+.sheet h3{font-size:19px;margin:0 0 4px}
+.sheet > p{color:var(--muted);font-size:13.5px;margin-bottom:18px}
+.opt{display:flex;gap:13px;width:100%;text-align:left;padding:13px 14px;border-radius:13px;border:1px solid var(--line);background:var(--code);color:var(--text);font-family:inherit;cursor:pointer;margin-bottom:10px}
+.opt:hover{border-color:#39507c;background:var(--raise)}
+.opt svg{color:var(--accent-hi);flex-shrink:0;margin-top:2px}
+.opt b{display:block;font-size:14px;font-weight:600}
+.opt span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.opt em{font-style:normal;margin-left:auto;align-self:center;font-size:12px;color:var(--ok);white-space:nowrap}
+.sheet .close{width:100%;height:38px;border-radius:11px;border:1px solid var(--line2);background:transparent;color:var(--muted);font-family:inherit;font-size:13px;cursor:pointer;margin-top:6px}
+
+@media (max-width:1180px){.toc{display:none}.shell{grid-template-columns:var(--nav) minmax(0,1fr)}.bar nav{display:none}.search{width:240px}.search:focus-within{width:300px}}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;inset:calc(var(--bar) + env(safe-area-inset-top,0px)) auto 0 0;width:min(300px,84vw);background:var(--surface);z-index:55;transform:translateX(-102%);transition:transform .25s ease}
+  .side.open{transform:none}
+  .main{padding:28px 16px 80px}
+  .bar-in{padding:0 16px;gap:10px}
+  .bar nav,.search,.ghost.gh,.ver{display:none}
+  .searchbtn{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;border:1px solid var(--line2);background:var(--raise);color:var(--text);cursor:pointer}
+  .bar.finding .bar-in > :not(.search){display:none}
+  .bar.finding .search{display:flex;flex:1;width:auto}
+  .bar.finding .search > kbd{display:none}
+  .bar.finding .search .shut{display:inline-flex}
+  .bar.finding .search{position:static}
+  .results{top:calc(100% + 6px);left:12px;right:12px;width:auto;max-height:calc(100vh - var(--bar) - 24px)}
+  .results .foot{display:none}
+  .burger{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;border:1px solid var(--line2);background:var(--raise);color:var(--text);cursor:pointer}
+  .hero{padding:24px 20px}
+  footer{padding:24px 16px 60px}
+}
+@media (prefers-reduced-motion:reduce){
+  .aiwrap::before,.aibtn::after{animation:none}
+  .tile,.sheet,.results,.found,.search{transition:none;animation:none}
+}
+
+.hljs-keyword,.hljs-built_in{color:#6FA8FF}
+.hljs-string{color:#7FD6A6}
+.hljs-number,.hljs-literal{color:#E0A83C}
+.hljs-comment{color:#5A6A88;font-style:italic}
+.hljs-title,.hljs-title.function_{color:#C4A6FF}
+.hljs-attr,.hljs-property{color:#9CC6FF}
+.hljs-type,.hljs-title.class_{color:#67E8F9}
+.hljs-meta{color:#5A6A88}
+pre code{color:#D6E0F2}
+</style>
+
+<header class="bar" id="bar">
+  <div class="bar-in">
+    <button class="burger" id="burger" aria-label="Открыть меню"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <a href="#top"><img class="logo" src="{{IMAGE Editor/Toolkit/Icons/Brand/jtlsdk-logo.png}}" alt="JTL SDK"></a>
+    <span class="ver">v{{VERSION}}</span>
+    <nav aria-label="Разделы">
+      <a href="#start">Начало</a>
+      <a href="#modules">Модули</a>
+      <a href="#platforms">Площадки</a>
+    </nav>
+    <span class="grow"></span>
+    <div class="search" role="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      <input id="search" type="search" placeholder="Поиск по документации" autocomplete="off" spellcheck="false" aria-label="Поиск по документации" aria-controls="results" aria-expanded="false">
+      <kbd id="search-key">⌘K</kbd>
+      <button class="shut" id="search-close" type="button" aria-label="Закрыть поиск"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="results" id="results" role="listbox" hidden></div>
+    </div>
+    <button class="searchbtn" id="searchbtn" type="button" aria-label="Поиск по документации"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
+    <a class="ghost gh" href="https://github.com/meepifiev/com.jtlstudio.sdk" target="_blank" rel="noopener">GitHub</a>
+    <span class="aiwrap"><button class="aibtn" id="aibtn" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>Для ИИ</button></span>
+  </div>
+</header>
+
+<div class="shell" id="top">
+  <aside class="side" id="side" aria-label="Навигация">
+    <h5>Начало</h5>
+    <a href="#start">Для чего нужен JTL SDK</a>
+    <a href="#install">Установка и настройка</a>
+    <a href="#quickstart">Инициализация</a>
+    <a href="#modules">Модули SDK</a>
+    <h5>Модули</h5>
+    <a href="#ads">Рекламная монетизация</a>
+    <a href="#game-events">Игровые события</a>
+    <a href="#purchases">Внутриигровые покупки</a>
+    <a href="#saves">Сохранение прогресса</a>
+    <a href="#leaderboards">Таблицы рекордов</a>
+    <a href="#flags">Удалённые параметры</a>
+    <a href="#languages">Локализация</a>
+    <a href="#audio">Настройки звука</a>
+    <a href="#time">Время</a>
+    <a href="#pause">Пауза</a>
+    <a href="#player">Игрок</a>
+    <a href="#platform">Площадка</a>
+    <a href="#device">Устройство</a>
+    <a href="#review-label">Отзыв и ярлык</a>
+    <a href="#links">Ссылки</a>
+    <h5>Справка</h5>
+    <a href="#platforms">Возможности площадок</a>
+    <a href="#ai">Для ИИ</a>
+  </aside>
+
+  <main class="main" id="doc">
+    <div class="hero">
+      <span class="streak s1"></span><span class="streak s2"></span><span class="streak s3"></span>
+      <div class="hero-in">
+        <div class="hero-copy">
+          <h1>Одна сборка.<br><span>Все игровые площадки.</span></h1>
+          <div class="cta">
+            <a class="btn btn-p" href="#quickstart">Быстрый старт</a>
+            <a class="btn btn-s" href="#install">Установка</a>
+          </div>
+        </div>
+        <div class="tiles">
+          <div class="tile"><img src="{{IMAGE Editor/Toolkit/Icons/Portals/yandex-games.png}}" alt=""><b>Yandex Games</b></div>
+          <div class="tile"><img src="{{IMAGE Editor/Toolkit/Icons/Portals/youtube-playables.png}}" alt=""><b>YouTube Playables</b></div>
+        </div>
+      </div>
+    </div>
+
+    <section id="start" data-keywords="обзор зачем возможности">
+      <h2>Для чего нужен JTL SDK</h2>
+      <p class="lead">Пакет для Unity, который прячет различия между веб-площадками за одним набором вызовов.</p>
+      <p>У каждой площадки свой JS-SDK, свой формат сохранений, свои правила рекламы, паузы и сжатия сборки. JTL SDK описывает эти правила как конфигурации: вы делаете одну активной, окно SDK применяет к проекту нужные настройки WebGL и define-символ, а в сборку попадает только мост этой площадки. Код игры при этом не меняется.</p>
+      <p>Вызов проходит четыре слоя. Статический фасад <code>JTLSDK</code> отдаёт модуль, например <code>JTLSDK.Ads</code>. Модуль проверяет состояние и аргументы и держит общие правила: паузу на время рекламы и оплаты, сохранение перед списанием покупки, очередь <code>GameReady</code>. Провайдер из активной конфигурации переводит вызов в API площадки. Мост (<code>.jspre</code> площадки и общий <code>jtlsdk.jslib</code>) вызывает JS-SDK и возвращает ответ в колбэк на главном потоке Unity. В редакторе провайдеры заменяются симуляцией, её ответы задаются в разделе Simulation.</p>
+    </section>
+
+    <section id="install" data-keywords="установка package manager git url manifest upm обновление">
+      <h2>Установка и настройка</h2>
+      <p class="lead">Через Unity Package Manager по git-ссылке. Unity 2021.3.18f1 или новее, платформа WebGL.</p>
+      <h3>Перед установкой</h3>
+      <ul class="plain">
+        <li><b>В Console не должно быть ошибок компиляции.</b> Пока проект не компилируется, Unity не выполняет editor-код пакета: окно SDK не откроется, а разделы и провайдеры покажут не то, что есть на самом деле. Сначала почините существующие ошибки, потом ставьте пакет.</li>
+        <li><b>Другой копии JTL SDK в проекте быть не должно.</b> Пакет из Package Manager и его же копия, импортированная в <code>Assets</code>, дают дублирующиеся типы и ошибки компиляции. Держите одну версию.</li>
+        <li><b>Другие SDK площадок конфликтуют.</b> Плагины со своим WebGL-кодом (<code>.jslib</code> и <code>.jspre</code>), которые сами обращаются к API Яндекса или YouTube, инициализируют тот же JS-SDK второй раз. В браузере это видно как ошибки про повторную инициализацию, двойные паузы и повторные запросы рекламы.</li>
+        <li><b>Переезд со старого плагина.</b> Старый плагин можно временно оставить рядом и переносить код по частям, но WebGL-сборку с двумя SDK сразу выкладывать не стоит: пока в проекте два платформенных слоя, поведение непредсказуемо.</li>
+      </ul>
+      <h3>Установка пакета</h3>
+      <div class="tabs" role="tablist"><button type="button" data-tab="pm" aria-selected="true">Package Manager</button><button type="button" data-tab="manifest" aria-selected="false">manifest.json</button></div>
+      <div class="codebox" data-panel="pm"><button class="copy" type="button">Копировать</button><pre><code class="language-plaintext">https://github.com/meepifiev/com.jtlstudio.sdk.git#v{{VERSION}}</code></pre></div>
+      <div class="codebox" data-panel="manifest" hidden><button class="copy" type="button">Копировать</button><pre><code class="language-json">{
+  "dependencies": {
+    "com.jtlstudio.sdk": "https://github.com/meepifiev/com.jtlstudio.sdk.git#v{{VERSION}}"
+  }
+}</code></pre></div>
+      <p>В Package Manager: <code>Window › Package Manager › + › Add package from git URL</code>. После установки откройте <code>JTL SDK › Toolkit</code>. О новых версиях окно SDK сообщит само: плашкой в верхней панели и кнопкой обновления в разделе Package Manager.</p>
+    </section>
+
+    <section id="quickstart" data-keywords="начать первый запуск create whenready gameready конфигурация шаблон сборка">
+      <h2>Инициализация</h2>
+      <p class="lead">Четыре шага до первой сборки.</p>
+      <div class="steps">
+        <div class="step"><span class="n">1</span><div><h3>Создайте конфигурацию</h3><p>Configurations, New configuration, выберите площадку. На площадку создаётся одна конфигурация, первая созданная становится активной сама. Конфигурация хранится в <code>Assets/Settings/JTLSDK/Configurations</code> и содержит провайдеры модулей, языки площадки и пресет Player Settings.</p><p>Активация ставит для WebGL define-символ <code>JTLSDK_YANDEX_GAMES</code> или <code>JTLSDK_YOUTUBE_PLAYABLES</code> и применяет пресет. Яндекс: Compression Format Brotli, Managed Stripping Level Medium. YouTube: Compression Format Disabled, Managed Stripping Level High. Для обеих площадок WebGL Template <code>JTLSDK</code>, Data Caching и Run In Background включены, Decompression Fallback выключен, Debug Symbols Off.</p></div></div>
+        <div class="step"><span class="n">2</span><div><h3>Установите шаблон</h3><p>Template, Install копирует шаблон загрузки в <code>Assets/WebGLTemplates/JTLSDK</code>. Логотип, фоны, прогресс-бар, пропорции холста и pixel ratio задаются в том же разделе и подставляются в <code>index.html</code> готовой сборки, файлы в <code>Assets</code> во время сборки не меняются. Если после обновления пакета шаблон устарел, он обновляется сам при загрузке редактора и перед сборкой из окна SDK. При фиксированных пропорциях поля вокруг холста красятся фоном страницы или, по галке Page as loading screen, тем же фоном, что и загрузочный экран.</p></div></div>
+        <div class="step"><span class="n">3</span><div><h3>Запустите SDK</h3><p><code>JTLSDK.Create()</code> вызывается один раз в первой сцене. Он загружает <code>Assets/Resources/JTLSDK/JTLSDKSettings.asset</code>, создаёт провайдеры активной конфигурации, подключает мост площадки и запускает все модули одновременно. Повторный <code>Create()</code> бросает <code>InvalidOperationException</code>, поэтому проверяйте <code>JTLSDK.IsCreated</code>.</p><p><code>JTLSDK.WhenReady</code> вызывает колбэк, когда ни один модуль не остался в <code>Pending</code>. Модуль, который не ответил за Initialization timeout (15 с по умолчанию), помечается <code>Failed</code>, так что колбэк приходит всегда. <code>GameReady()</code> вызывается один раз, когда игрок уже может играть.</p>
+          <div class="codebox solo"><div class="file"><b>Bootstrap.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE Bootstrap}}</code></pre></div>
+        </div></div>
+        <div class="step"><span class="n">4</span><div><h3>Соберите</h3><p>Раздел Build, кнопка Build Project.</p></div></div>
+      </div>
+    </section>
+
+    <section id="modules" data-keywords="модули sdk провайдер issupported isready whenready константы ids логи логирование консоль loglevel">
+      <h2>Модули SDK</h2>
+      <p class="lead">Каждый модуль доступен как статическое свойство <code>JTLSDK</code> и реализует <code>IModule</code>. Любое обращение к модулю до <code>Create()</code> и после остановки SDK бросает <code>InvalidOperationException</code>: API работает только у запущенного SDK. Без исключений читаются только <code>JTLSDK.IsCreated</code>, <code>IsReady</code>, <code>Version</code> и <code>LogLevel</code>, поэтому отписки в <code>OnDisable</code> оборачиваются проверкой <code>IsCreated</code>.</p>
+      <div class="codebox solo"><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">private void OnDisable()
+{
+    if (JTLSDK.IsCreated)
+    {
+        JTLSDK.Language.Changed -= OnLanguageChanged;
+    }
+}</code></pre></div>
+      <div class="tablewrap"><table>
+        <tr><th>State</th><th>IsSupported</th><th>IsReady</th><th>Когда</th></tr>
+        <tr><td class="api">Pending</td><td>true</td><td>false</td><td>Провайдер ещё запускается.</td></tr>
+        <tr><td class="api">Ready</td><td>true</td><td>true</td><td>Провайдер ответил, модуль работает.</td></tr>
+        <tr><td class="api">Failed</td><td>true</td><td>true</td><td>Провайдер вернул ошибку или не ответил за Initialization timeout. Вызовы не бросают исключений и возвращают безопасный результат.</td></tr>
+        <tr><td class="api">Unsupported</td><td>false</td><td>true</td><td>Площадка этого не умеет, или в конфигурации выбран провайдер Unsupported.</td></tr>
+      </table></div>
+      <p><code>WhenReady(callback)</code> модуля вызывает колбэк сразу, если модуль уже вышел из <code>Pending</code>, иначе при первом переходе в <code>Ready</code>, <code>Failed</code> или <code>Unsupported</code>. Колбэк приходит и при ошибке, поэтому что произошло, смотрите в <code>State</code>. Модули Pause, Device и Audio готовы сразу после <code>Create()</code>, Data становится Ready только после первой загрузки сейва.</p>
+      <h3>Настраиваемые и готовые к работе</h3>
+      <p>Purchases, Saves, Languages, Leaderboards и Flags требуют данных из окна SDK: каталога товаров, досок, флагов, языков, лимитов сейва. Ads, Game events, Pause, Time, Audio, Player, Platform, Review и Game label работают без настройки: в конфигурации для них выбирается провайдер, а у рекламы Яндекса ещё интервалы и sticky banner.</p>
+      <h3>Логи в консоли</h3>
+      <p>SDK пишет свой жизненный цикл в консоль Unity с префиксом <code>[JTL SDK]</code>: старт с версией и площадкой, состояние модулей, показ и результат рекламы, покупки, сейвы, язык, лидерборды. Уровень задаётся в Configurations, General settings, поле Logging level: <b>Выключено</b> (ни одной строки), <b>Только ошибки</b>, <b>Предупреждения и ошибки</b>, <b>Всё</b>.</p>
+      <p>Из кода тот же переключатель это <code>JTLSDK.LogLevel</code>. Значение из кода сильнее настройки в окне SDK, работает до <code>Create()</code> и меняется на ходу, поэтому в релизной сборке логи выключаются одной строкой, а на время отладки включаются обратно.</p>
+      <div class="codebox solo"><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">JTLSDK.LogLevel = LogLevel.None;
+JTLSDK.Create();
+
+// обратно на время отладки
+JTLSDK.LogLevel = LogLevel.All;</code></pre></div>
+      <h3>Константы</h3>
+      <p>Generate constants в разделах Purchases, Leaderboards и Flags пишет <code>Assets/Scripts/Generated/JTLSDKIds.cs</code> с классами <code>ProductIds</code>, <code>LeaderboardIds</code> и <code>FlagKeys</code> в корневом namespace проекта (если он не задан, в <code>Game</code>). Имена строятся в PascalCase из букв и цифр id. Файл не обновляется сам: после правки каталога нажмите кнопку снова.</p>
+    </section>
+
+    <section id="ads" data-keywords="рекламная монетизация реклама интерстишл баннер награда ads interstitial rewarded banner">
+      <h2>Рекламная монетизация</h2>
+      <p class="lead">Interstitial, rewarded и баннер. Пока реклама на экране, игра на паузе с источником <code>Advertisement</code>.</p>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">ShowInterstitial(onResult)</td><td>Полноэкранная реклама. Колбэк необязателен.</td></tr>
+        <tr><td class="api">ShowRewarded(rewardId, onResult)</td><td>Реклама за награду. Пустой <code>rewardId</code> бросает <code>ArgumentException</code>, <code>null</code> вместо колбэка бросает <code>ArgumentNullException</code>. На YouTube <code>rewardId</code> уходит в <code>requestRewardedAd</code>, на Яндексе не используется.</td></tr>
+        <tr><td class="api">ShowBanner()<br>HideBanner()</td><td>Баннер Яндекса: <code>adv.showBannerAdv()</code> и <code>adv.hideBannerAdv()</code>, без колбэка. <code>IsBannerVisible</code> true, если Яндекс ответил, что sticky-баннер показан.</td></tr>
+        <tr><td class="api">IsShowing<br>Opened<br>Closed</td><td>Реклама на экране и события начала и конца показа.</td></tr>
+        <tr><td class="api">IsInterstitialSupported<br>IsRewardedSupported<br>IsBannerSupported</td><td>Какие форматы есть на площадке.</td></tr>
+      </table></div>
+      <h3>Порядок показа</h3>
+      <p>Сначала проверки, без показа и без событий: модуль Pending даёт <code>NotReady</code>, формат не поддерживается даёт <code>NotSupported</code>, уже идёт показ даёт <code>NotShown</code>. Затем <code>IsShowing</code> становится true, ставится пауза <code>Advertisement</code>, геймплей останавливается, приходит <code>Opened</code>. После закрытия в обратном порядке: <code>IsShowing</code> false, геймплей возобновляется, пауза снимается, <code>Closed</code>, затем <code>onResult</code>. Колбэк приходит ровно один раз.</p>
+      <div class="tablewrap"><table>
+        <tr><th>AdResult</th><th>Yandex Games</th><th>YouTube Playables</th></tr>
+        <tr><td class="api">Shown</td><td><code>showFullscreenAdv</code>: <code>onClose(wasShown = true)</code></td><td><code>requestInterstitialAd()</code> выполнился</td></tr>
+        <tr><td class="api">Rewarded</td><td><code>showRewardedVideo</code>: <code>onRewarded</code>, затем <code>onClose</code></td><td><code>requestRewardedAd</code> вернул true</td></tr>
+        <tr><td class="api">Closed</td><td><code>showRewardedVideo</code>: <code>onClose</code> без <code>onRewarded</code></td><td><code>requestRewardedAd</code> вернул false</td></tr>
+        <tr><td class="api">NotShown</td><td><code>onClose(wasShown = false)</code>, <code>onOffline</code> или не выдержан интервал</td><td>не бывает</td></tr>
+        <tr><td class="api">Failed</td><td><code>onError</code></td><td>ошибка вызова</td></tr>
+      </table></div>
+      <h3>Интервалы на Яндексе</h3>
+      <p>В настройках провайдера рекламы Яндекса в конфигурации: минимальный интервал между interstitial (60 с после последнего показанного) и пропуск interstitial после rewarded (60 с после досмотренного). Внутри интервала interstitial возвращает <code>NotShown</code>, Яндекс не вызывается. Sticky banner показывает баннер сразу при старте. На YouTube интервалы ведёт сама площадка, баннера нет.</p>
+      <div class="codebox solo"><div class="file"><b>RewardedDoubleCoins.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE RewardedDoubleCoins}}</code></pre></div>
+      <div class="codebox solo"><div class="file"><b>LevelTransitionAds.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE LevelTransitionAds}}</code></pre></div>
+    </section>
+
+    <section id="game-events" data-keywords="игровые события загрузка старт геймплея gameevents gameready gameplaystart">
+      <h2>Игровые события</h2>
+      <p class="lead">Сигналы площадке о загрузке и активной игре.</p>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">GameReady()</td><td>Один раз, когда игрок может играть: главное меню или первый уровень. До готовности модуля вызов ждёт в очереди. Яндекс: <code>LoadingAPI.ready()</code>. YouTube: <code>ytgame.game.firstFrameReady()</code>, если шаблон его ещё не отправил, и <code>ytgame.game.gameReady()</code>.</td></tr>
+        <tr><td class="api">GameplayStarted()</td><td>Игра активна, например идёт уровень. Яндекс: <code>GameplayAPI.start()</code>. На YouTube такого вызова нет, меняется только <code>IsGameplayActive</code>.</td></tr>
+        <tr><td class="api">GameplayStopped()</td><td>Меню, экран конца уровня. Яндекс: <code>GameplayAPI.stop()</code>.</td></tr>
+        <tr><td class="api">GameplayRestarted()</td><td><code>GameplayStopped()</code> и <code>GameplayStarted()</code> подряд.</td></tr>
+        <tr><td class="api">IsGameReady<br>IsGameplayActive</td><td>Текущее состояние. Повторный вызов с тем же состоянием ничего не отправляет.</td></tr>
+      </table></div>
+      <p>Во время системной паузы и рекламы SDK сам вызывает <code>GameplayStopped</code>, а после неё <code>GameplayStarted</code>, если геймплей был активен. Вручную это делать не нужно.</p>
+      <div class="codebox solo"><div class="file"><b>GameplayEvents.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE GameplayEvents}}</code></pre></div>
+    </section>
+
+    <section id="purchases" data-keywords="внутриигровые покупки платежи оплата магазин товары iap payments restore">
+      <h2>Внутриигровые покупки</h2>
+      <p class="lead">Покупки за валюту площадки. Работают на Яндексе через <code>ysdk.getPayments()</code>, на YouTube модуль Unsupported.</p>
+      <p>Товар объявляется в разделе Purchases окна SDK: Product id (им пользуется код), Type (Non-consumable или Consumable), Yandex Games id (пустое поле значит тот же id) и Test price с валютой для редактора. При старте SDK запрашивает <code>getCatalog()</code> и <code>getPurchases()</code>.</p>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">Purchase(productId, onSuccess, onError)</td><td>Открывает оплату: <code>purchase({ id })</code>. До ответа игра на паузе с источником <code>Purchase</code>. Товар выдаётся в <code>onSuccess</code>. <code>onError</code> вызывается, если модуль ещё не готов, покупки не поддерживаются, id нет в каталоге, уже идёт другая покупка или игрок закрыл окно оплаты. Причина пишется в консоль.</td></tr>
+        <tr><td class="api">GetProductData(productId)</td><td><code>ProductData</code> из каталога площадки: <code>Id</code>, <code>Price</code> (decimal), <code>Currency</code> и <code>Formatted</code>, готовая строка для кнопки. У неизвестного товара и до готовности модуля <code>IsValid</code> равен false.</td></tr>
+        <tr><td class="api">IsAlreadyPurchased(productId)</td><td>Есть ли товар в списке покупок площадки. Для Non-consumable это покупка навсегда. Consumable в списке только до списания.</td></tr>
+        <tr><td class="api">RestorePurchases(onRestoreData)</td><td>Перечитывает покупки площадки и отдаёт <code>IRestoreData</code>. Если покупок нет на площадке, приходит <code>null</code>.</td></tr>
+      </table></div>
+      <h3>Что происходит после оплаты</h3>
+      <ol class="plain">
+        <li>Площадка подтверждает оплату, пауза снимается.</li>
+        <li>SDK вызывает <code>onSuccess</code>, игра начисляет товар через <code>JTLSDK.Data</code>.</li>
+        <li>SDK помечает покупку выданной и сохраняет сейв.</li>
+        <li>Если товар Consumable и сохранение прошло, SDK списывает покупку: <code>consumePurchase(token)</code>. Non-consumable не списывается никогда.</li>
+      </ol>
+      <h3>Восстановление покупок</h3>
+      <p>Оплата могла пройти, а товар не дойти до игрока: оборвалась связь, игрок закрыл вкладку или игра упала. Такая покупка остаётся у площадки, и вернуть её нужно вручную:</p>
+      <div class="codebox solo"><div class="file"><b>Shop.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE Shop}}</code></pre></div>
+      <p><code>IRestoreData.AllPurchases</code> это все покупки игрока на площадке, <code>PendingProducts</code> только те товары, которые ещё не выданы. <code>RestoreProduct(productId, onProductRestore)</code> вызывает колбэк столько раз, сколько оплат этого товара не выдано, отмечает их выданными и списывает расходуемые. Повторный вызов ничего не выдаёт.</p>
+      <p>Выданные покупки SDK помечает в сейве игрока (ключ <code>jtlsdk.granted</code>), поэтому товар не выдаётся дважды, даже если списать покупку на площадке не удалось. Начисляйте товар только через <code>JTLSDK.Data</code>: тогда начисление и отметка о выдаче уходят на площадку одним документом.</p>
+      <div class="note info"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B93FF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span>Вызывайте <code>RestorePurchases</code> один раз после <code>JTLSDK.WhenReady</code>. Если этого не сделать, SDK через несколько секунд напишет в консоль предупреждение о невыданных покупках.</span></div>
+      <h3>В редакторе</h3>
+      <p>Покупки симулируются и хранятся в PlayerPrefs (<code>JTLSDK.Prototype.Purchases</code>). В разделе Simulation, Purchases выбирается Ask every time (окно с вариантами ответа во вкладке Game) или Use selected result. Вариант <b>paid, restored on next launch</b> проверяет восстановление: покупка записывается как оплаченная, <code>onError</code> срабатывает, а товар приходит в <code>RestorePurchases</code> при следующем запуске Play Mode.</p>
+    </section>
+
+    <section id="saves" data-keywords="сохранение прогресса сохранения сейвы облако playerprefs data save backup">
+      <h2>Сохранение прогресса</h2>
+      <p class="lead">Ключ-значение в облаке игрока. Все ключи хранятся одним JSON-документом, ключ появляется при первом <code>Set</code>.</p>
+      <div class="tablewrap"><table>
+        <tr><th>Площадка</th><th>Чтение и запись</th><th>Лимит</th></tr>
+        <tr><td>Yandex Games</td><td><code>player.getData(["jtlsdk"])</code>, <code>player.setData({ jtlsdk }, true)</code></td><td>200 KiB, предупреждение после 100 KiB</td></tr>
+        <tr><td>YouTube Playables</td><td><code>ytgame.game.loadData()</code>, <code>ytgame.game.saveData()</code></td><td>3 MiB, предупреждение после 500 KiB</td></tr>
+        <tr><td>Редактор</td><td>PlayerPrefs, ключ <code>JTLSDK.Data</code></td><td>как у площадки активной конфигурации</td></tr>
+      </table></div>
+      <p>Размер считается в байтах UTF-8 всего документа. Документ больше лимита не отправляется, в консоли ошибка.</p>
+      <h3>Загрузка</h3>
+      <p>SDK загружает сейв при старте, модуль становится Ready после первой загрузки. <code>LoadState</code>: <code>Loaded</code> (данные есть), <code>Empty</code> (первый запуск), <code>Failed</code> (ошибка площадки или повреждённый документ). При <code>Failed</code> запись блокируется, чтобы не затереть прогресс в облаке, а загрузка повторяется каждые 30 с. Удачный повтор заменяет значения в памяти и вызывает <code>Loaded</code>.</p>
+      <p>До готовности модуля чтение возвращает значение по умолчанию с предупреждением, а запись не выполняется, в консоли ошибка. Читайте сейв в <code>WhenReady</code>.</p>
+      <h3>Типы</h3>
+      <p><code>SetInt</code> хранит число как long, <code>SetFloat</code> как double, есть <code>SetBool</code> и <code>SetString</code>. <code>SetObject</code> пишет объект вложенным JSON через <code>JsonUtility</code>, поэтому сохраняются только поля, которые сериализует <code>JsonUtility</code>. <code>GetObject&lt;T&gt;</code> создаёт экземпляр конструктором без параметров и заполняет его. Если ключ хранит другой тип, <code>Get*</code> возвращает значение по умолчанию. Для удаления есть <code>DeleteKey</code> и <code>DeleteAll</code>, для проверки <code>HasKey</code>.</p>
+      <h3>Запись</h3>
+      <p><code>Set*</code> меняет значение в памяти и ставит <code>IsDirty</code>. Через Autosave delay после последнего важного изменения (2 с по умолчанию, по реальному времени, <code>Time.timeScale</code> не влияет) документ уходит на площадку целиком.</p>
+      <p>У всех <code>Set*</code> есть необязательный параметр <code>important</code>, по умолчанию <code>true</code>:</p>
+      <div class="tablewrap"><table>
+        <tr><th>Вызов</th><th>Что происходит</th></tr>
+        <tr><td class="api">SetInt(key, value)</td><td>Значение меняется в памяти и запускает автосохранение. Так пишутся монеты, открытые уровни, покупки.</td></tr>
+        <tr><td class="api">SetInt(key, value, important: false)</td><td>Значение меняется только в памяти, автосохранение не запускается. Уйдёт на площадку вместе со следующим важным изменением, при <code>Save()</code> или когда игрок скрыл вкладку. Так пишется то, что меняется часто: прогресс внутри уровня, позиция игрока, счётчик секунд.</td></tr>
+      </table></div>
+      <p>Смысл флага в том, чтобы не гонять сеть на каждое мелкое изменение: у площадок есть свои ограничения на частоту записи, а документ отправляется целиком.</p>
+      <p><code>Save(onSaved)</code> отправляет немедленно, например после уровня, и пишет всё, включая неважные изменения. Колбэк получает <code>false</code>, если сейв ещё не загружен, загрузился с ошибкой или уже идёт другая запись: в последнем случае запись встанет в очередь и колбэк придёт после неё. Событие <code>Saved(bool)</code> сообщает результат каждой записи, которую SDK начал.</p>
+      <h3>Закрытие вкладки</h3>
+      <p>В WebGL браузер не даёт игре времени на сеть: Unity вызывает только <code>OnApplicationFocus</code>, а <code>OnApplicationQuit</code> при закрытии вкладки не срабатывает вообще. Поэтому мост SDK слушает <code>visibilitychange</code> и <code>pagehide</code>: как только страница скрывается, изменённый сейв уходит на площадку и одновременно пишется в <code>localStorage</code> браузера.</p>
+      <p>При следующем запуске SDK сравнивает сейв площадки с этой резервной копией по номеру ревизии. Если площадка не успела записать последнюю версию, SDK берёт копию, отправляет её на площадку и удаляет. Копия хранится только в браузере игрока и нужна на случай обрыва.</p>
+      <h3>Вход игрока</h3>
+      <p>После <code>Player.Authorize</code> на Яндексе сейв перечитывается уже с аккаунта. Если на аккаунте есть сейв, он заменяет значения в памяти. Если нет, текущий прогресс сохраняется в аккаунт.</p>
+      <p>Раздел Saves в окне SDK показывает сейв редактора: значения можно поправить руками, очистить, выгрузить и загрузить JSON. В Simulation есть Simulate load failure и Empty save on start.</p>
+      <div class="codebox solo"><div class="file"><b>SaveProgress.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE SaveProgress}}</code></pre></div>
+    </section>
+
+    <section id="leaderboards" data-keywords="таблицы рекордов лидерборды рейтинг счёт очки leaderboards">
+      <h2>Таблицы рекордов</h2>
+      <p class="lead">Таблицы рекордов. В коде один id, id доски на Яндексе задаётся в разделе Leaderboards (пустое поле значит тот же id).</p>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">SetScore(id, score)</td><td>Отправляет счёт (<code>long</code>) без ответа. Яндекс: <code>leaderboards.setScore</code>. Если игрок на Яндексе не вошёл, последний счёт по каждой доске ждёт в памяти и уходит после <code>Player.Authorized</code>; перезагрузку страницы он не переживает. Пока модуль не Ready, счёт отбрасывается с предупреждением.</td></tr>
+        <tr><td class="api">Load(id, top, around, onResult)</td><td>Яндекс: <code>getEntries</code> с <code>quantityTop</code> от 1 до 20, <code>quantityAround</code> от 1 до 10 и <code>includeUser</code>. <code>LeaderboardPage</code>: <code>Entries</code> и <code>CurrentPlayer</code> (запись игрока или <code>null</code>). Если <code>CanLoad</code> false, приходит пустая страница.</td></tr>
+        <tr><td class="api">GetPlayerEntry(id, onResult)</td><td>Яндекс: <code>getPlayerEntry</code>. <code>null</code>, если у игрока нет записи или запрос не удался.</td></tr>
+        <tr><td class="api">CanLoad</td><td>Можно ли загружать таблицы: true на Яндексе, false на YouTube.</td></tr>
+      </table></div>
+      <p><code>LeaderboardEntry</code>: <code>Rank</code>, <code>Score</code>, <code>PlayerName</code>, <code>AvatarUrl</code>, <code>IsCurrentPlayer</code>. В редакторе счёт хранится в PlayerPrefs, а <code>Load</code> собирает таблицу вокруг игрока по разделу Simulation, карточка Leaderboards: сколько записей выше и ниже игрока и с каким шагом очков. По умолчанию это 3 и 3 с шагом 10, то есть 7 записей и игрок на 4 месте.</p>
+      <div class="note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E0A83C" stroke-width="2" stroke-linecap="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><span><b>YouTube:</b> таблица одна, её показывает сама площадка. Любой <code>SetScore</code> уходит в <code>ytgame.engagement.sendScore({ value })</code> без id доски, поэтому отправляйте туда только главный счёт игры.</span></div>
+      <div class="codebox solo"><div class="file"><b>LeaderboardExample.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE LeaderboardExample}}</code></pre></div>
+    </section>
+
+    <section id="flags" data-keywords="удалённые параметры флаги remote config flags">
+      <h2>Удалённые параметры</h2>
+      <p class="lead">Удалённые параметры Яндекса: <code>ysdk.getFlags()</code>. На YouTube действуют значения по умолчанию.</p>
+      <p>Флаг объявляется в разделе Flags: Key, Type (bool, int, float, string) и Default value. Флаги запрашиваются один раз при старте, событий обновления нет, поэтому читайте их после <code>WhenReady</code>.</p>
+      <p><code>GetBool</code>, <code>GetInt</code>, <code>GetFloat</code> и <code>GetString</code> ищут значение по порядку: значение площадки, если модуль Ready и оно пришло; затем Default value из окна SDK; затем <code>defaultValue</code> из аргумента вызова. Если строку не удалось разобрать как нужный тип, возвращается <code>defaultValue</code> из аргумента. bool принимает только <code>true</code> и <code>false</code>, числа разбираются с invariant culture. <code>HasKey</code> true для любого объявленного ключа.</p>
+      <p>В редакторе значение флага подменяется в разделе Simulation, карточка Flags: ключ и значение строкой, как их вернула бы площадка. Ключи без подмены отдают Default value.</p>
+      <div class="codebox solo"><div class="file"><b>FlagsExample.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE FlagsExample}}</code></pre></div>
+    </section>
+
+    <section id="languages" data-keywords="локализация языки перевод language">
+      <h2>Локализация</h2>
+      <p class="lead">Язык игрока от площадки. <code>Language</code> содержит 26 языков.</p>
+      <p>В разделе Languages задаются языки проекта, Default language и Replacements (замены для языков, которых нет в проекте), а в конфигурации те из них, что включены на площадке. <code>Supported</code> это языки проекта, включённые в активной конфигурации; если таких нет, только Default language.</p>
+      <h3>Какой язык выбирается при старте</h3>
+      <p>SDK берёт код языка: на Яндексе <code>environment.i18n.lang</code>, на YouTube <code>ytgame.system.getLanguage()</code>. Код приводится к нижнему регистру, <code>_</code> меняется на <code>-</code>, сначала ищется точное совпадение, потом по основной части: <code>en-US</code> становится English. Если языка нет в <code>Supported</code>, берётся первая замена из Replacements, чей язык поддерживается, иначе Default language. В редакторе язык старта задаётся полем Start language в разделе Languages и меняется в оверлее вкладки Game.</p>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">Current</td><td>Текущий язык. Выбор при старте не вызывает <code>Changed</code>.</td></tr>
+        <tr><td class="api">Supported</td><td><code>IReadOnlyList&lt;Language&gt;</code> языков, которые можно выбрать.</td></tr>
+        <tr><td class="api">Set(language)</td><td>Меняет язык и вызывает <code>Changed</code>. Язык вне <code>Supported</code> бросает <code>ArgumentOutOfRangeException</code>. Выбор не сохраняется: храните его в <code>JTLSDK.Data</code> и применяйте после <code>WhenReady</code>.</td></tr>
+        <tr><td class="api">Changed</td><td><code>event Action&lt;Language&gt;</code> после <code>Set</code>.</td></tr>
+      </table></div>
+      <div class="codebox solo"><div class="file"><b>LanguageExample.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE LanguageExample}}</code></pre></div>
+    </section>
+
+    <section id="audio" data-keywords="настройки звука громкость музыка audio volume mute">
+      <h2>Настройки звука</h2>
+      <p class="lead">Громкость игры, тишина в меню и звук, выключенный самим игроком на площадке.</p>
+      <h3>Как это работает</h3>
+      <p>Как и со временем, <code>AudioListener</code> принадлежит SDK: игра задаёт свои значения, а два свойства Unity пересчитываются из них при каждом изменении громкости, паузы игры, системной паузы и звука площадки:</p>
+      <div class="codebox solo"><button class="copy" type="button">Копировать</button><pre><code class="language-plaintext">AudioListener.pause  = системная пауза со звуком || JTLSDK.Audio.Paused;
+AudioListener.volume = (системная пауза со звуком || звук выключен площадкой)
+    ? 0f
+    : JTLSDK.Audio.Volume;</code></pre></div>
+      <p>«Системная пауза со звуком» это пауза площадки при включённом пункте «Ставить на паузу <code>AudioListener</code>» в разделе Pause. Ползунок громкости игрока хранится в <code>Audio.Volume</code> и возвращается сам, когда реклама закончилась или игрок вернулся во вкладку.</p>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">Audio.Volume</td><td>Громкость игры от 0 до 1, иначе исключение. Это значение для ползунка в настройках, его же сохраняйте в <code>JTLSDK.Data</code>.</td></tr>
+        <tr><td class="api">Audio.Paused</td><td>Тишина по решению игры, например в своём меню паузы. На <code>IsPaused</code> и на площадку не влияет.</td></tr>
+        <tr><td class="api">Audio.IsPlatformMuted, PlatformMuteChanged</td><td>Звук выключил игрок на самой площадке. YouTube: <code>ytgame.system.isAudioEnabled()</code> и <code>onAudioEnabledChange</code>. На Яндексе всегда false. Пока звук выключен площадкой, игра молчит при любой громкости.</td></tr>
+      </table></div>
+      <div class="note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E0A83C" stroke-width="2" stroke-linecap="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><span>Прямая запись в <code>AudioListener.volume</code> или <code>AudioListener.pause</code> перезапишется при следующем пересчёте. Code Analyzer заменяет такие места на <code>JTLSDK.Audio.Volume</code> и <code>JTLSDK.Audio.Paused</code>.</span></div>
+      <div class="codebox solo"><div class="file"><b>VolumeSettings.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE VolumeSettings}}</code></pre></div>
+    </section>
+
+    <section id="time" data-keywords="время серверное время timescale time now">
+      <h2>Время</h2>
+      <p class="lead">Масштаб времени игры и время площадки.</p>
+      <h3>Как это работает</h3>
+      <p><code>Time.timeScale</code> и <code>AudioListener</code> принадлежат SDK. Игра не пишет в них напрямую, потому что у площадки есть своя пауза: реклама, оплата, потеря фокуса, сигнал площадки. Если бы игра и SDK писали в одно и то же свойство, побеждал бы тот, кто записал последним, и после рекламы игра могла остаться замороженной или, наоборот, продолжить идти во время паузы.</p>
+      <p>Поэтому SDK хранит значение игры у себя, а <code>Time.timeScale</code> считает из двух величин каждый раз, когда любая из них меняется:</p>
+      <div class="codebox solo"><button class="copy" type="button">Копировать</button><pre><code class="language-plaintext">Time.timeScale = (системная пауза и включен пункт Time.timeScale в разделе Pause)
+    ? 0f
+    : JTLSDK.Time.Scale;</code></pre></div>
+      <p>Пересчёт происходит в двух случаях: игра присвоила <code>JTLSDK.Time.Scale</code> или изменилось состояние паузы. Значение игры при этом никуда не девается: оно лежит в <code>Time.Scale</code> и возвращается в Unity, как только пауза снялась.</p>
+      <div class="tablewrap"><table>
+        <tr><th>Что произошло</th><th>JTLSDK.Time.Scale</th><th>Time.timeScale</th></tr>
+        <tr><td>Игра идёт</td><td>1</td><td>1</td></tr>
+        <tr><td>Игра открыла своё меню: <code>Time.Scale = 0</code></td><td>0</td><td>0</td></tr>
+        <tr><td>Замедление боя: <code>Time.Scale = 0.5</code></td><td>0.5</td><td>0.5</td></tr>
+        <tr><td>Во время замедления началась реклама</td><td>0.5</td><td>0</td></tr>
+        <tr><td>Реклама закончилась</td><td>0.5</td><td>0.5</td></tr>
+        <tr><td>Игрок свернул вкладку и вернулся</td><td>0.5</td><td>0.5</td></tr>
+      </table></div>
+      <div class="note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E0A83C" stroke-width="2" stroke-linecap="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><span>Прямая запись в <code>Time.timeScale</code> живёт до следующего пересчёта: первая же пауза или первое присвоение <code>Time.Scale</code> её перезапишут. Раздел Code Analyzer в окне SDK находит такие места и заменяет их на <code>JTLSDK.Time.Scale</code>.</span></div>
+      <h3>API</h3>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">Time.Scale</td><td>Масштаб времени игры, не меньше 0 (отрицательный бросает исключение). По умолчанию 1. Пункт «Останавливать <code>Time.timeScale</code>» в разделе Pause включён по умолчанию; если его снять, во время системной паузы Unity получает <code>Scale</code> без изменений.</td></tr>
+        <tr><td class="api">Time.Now, IsServerTime</td><td><code>DateTimeOffset</code>. Яндекс: <code>ysdk.serverTime()</code> один раз при старте, дальше время идёт по часам устройства от этой точки, <code>IsServerTime</code> true. YouTube и редактор: время устройства, <code>IsServerTime</code> false.</td></tr>
+      </table></div>
+      <p>Серверное время нужно для ежедневных наград и таймеров: часы устройства игрок может перевести.</p>
+    </section>
+
+    <section id="pause" data-keywords="пауза фокус остановка pause">
+      <h2>Пауза</h2>
+      <p class="lead">Системная пауза только автоматическая: игра не ставит её сама, а реагирует на неё.</p>
+      <div class="tablewrap"><table>
+        <tr><th>Источник</th><th>Когда ставится</th></tr>
+        <tr><td class="api">Advertisement</td><td>Реклама на экране.</td></tr>
+        <tr><td class="api">Purchase</td><td>Открыто окно оплаты.</td></tr>
+        <tr><td class="api">Platform</td><td>Яндекс: <code>game_api_pause</code> и <code>game_api_resume</code>. YouTube: <code>ytgame.system.onPause</code> и <code>onResume</code>.</td></tr>
+        <tr><td class="api">Focus</td><td><code>OnApplicationFocus(false)</code>, если в конфигурации включена пауза при потере фокуса. Снимается, когда фокус вернулся. В редакторе не срабатывает.</td></tr>
+      </table></div>
+      <p><code>IsPaused</code> true, пока есть хотя бы один источник, <code>Sources</code> перечисляет активные. <code>Changed(bool)</code> вызывается только при смене общего состояния, а не каждого источника.</p>
+      <h3>Что делает пауза</h3>
+      <p>Настраивается в разделе Pause, по умолчанию всё включено: <code>Time.timeScale</code> становится 0; <code>AudioListener.pause</code> true и <code>AudioListener.volume</code> 0; все включённые EventSystem выключаются, а после паузы включаются ровно они же; курсор становится видимым и свободным.</p>
+      <p>После паузы SDK заново применяет свои значения: <code>JTLSDK.Time.Scale</code>, <code>Audio.Volume</code> и <code>Audio.Paused</code>, <code>Device.CursorVisible</code> и <code>Device.CursorLock</code>. Прямые записи в <code>Time.timeScale</code>, <code>AudioListener</code> и <code>Cursor</code> перезапишутся при следующей смене паузы, поэтому меняйте их только через SDK.</p>
+      <h3>Своё меню паузы</h3>
+      <p>Меню игры ставит паузу через <code>JTLSDK.Time.Scale = 0</code> и <code>JTLSDK.Audio.Paused = true</code>. На <code>IsPaused</code> это не влияет, а после системной паузы значения игры вернутся.</p>
+      <h3>ShowContinuePrompt</h3>
+      <p><code>ShowContinuePrompt(onContinue)</code> показывает поверх страницы экран с просьбой нажать для продолжения (английский, русский, турецкий). Клик, Enter или Space убирают паузу по фокусу, возвращают фокус окну и вызывают <code>onContinue</code>. Остальные источники паузы остаются.</p>
+      <div class="codebox solo"><div class="file"><b>PauseMenu.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE PauseMenu}}</code></pre></div>
+      <div class="note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E0A83C" stroke-width="2" stroke-linecap="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><span><b>YouTube:</b> пауза по потере фокуса выключена и включить её нельзя. Площадка требует вставать на паузу и продолжать игру только по <code>onPause</code> и <code>onResume</code>, без событий видимости страницы.</span></div>
+    </section>
+
+    <section id="player" data-keywords="игрок профиль авторизация вход имя аватар player">
+      <h2>Игрок</h2>
+      <p class="lead">Профиль и вход игрока. Есть только на Яндексе, на YouTube игрок анонимный и модуль Unsupported.</p>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">IsAuthorized<br>Id<br>Name<br>AvatarUrl</td><td>Яндекс: <code>ysdk.getPlayer()</code>, затем <code>isAuthorized()</code>, <code>getUniqueID()</code>, <code>getName()</code>, <code>getPhoto("medium")</code>. Без входа и пока модуль не Ready: false и пустые строки.</td></tr>
+        <tr><td class="api">Authorize(onResult)</td><td>Открывает <code>ysdk.auth.openAuthDialog()</code>. При успехе SDK перечитывает профиль и сейв (см. Saves), вызывает <code>Authorized</code>, затем <code>onResult(true)</code>. Отказ даёт false. Если игрок уже вошёл, сразу true без события.</td></tr>
+        <tr><td class="api">Authorized</td><td><code>event Action</code> после успешного входа.</td></tr>
+      </table></div>
+      <p>В редакторе профиль задаётся в Simulation: по умолчанию игрок не вошёл, <code>Authorize</code> всегда успешен.</p>
+      <div class="codebox solo"><div class="file"><b>PlayerProfile.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE PlayerProfile}}</code></pre></div>
+    </section>
+
+    <section id="platform" data-keywords="площадка платформа возможности capability supports appid">
+      <h2>Площадка</h2>
+      <p class="lead">На какой площадке запущена игра и что на ней есть.</p>
+      <p><code>Platform.Current</code>: <code>PlatformId</code> Editor, YandexGames или YouTubePlayables; в редакторе с симуляцией это площадка активной конфигурации. <code>Platform.AppId</code>: id игры на Яндексе (<code>environment.app.id</code>), на YouTube пустая строка.</p>
+      <div class="tablewrap"><table>
+        <tr><th>Capability</th><th>Yandex Games</th><th>YouTube Playables</th></tr>
+        <tr><td class="api">Interstitial, Rewarded</td><td>да</td><td>да</td></tr>
+        <tr><td class="api">Banner</td><td>да</td><td>нет</td></tr>
+        <tr><td class="api">Purchases</td><td>да</td><td>нет</td></tr>
+        <tr><td class="api">Leaderboards</td><td>да</td><td>да, одна таблица</td></tr>
+        <tr><td class="api">LeaderboardsLoad</td><td>да</td><td>нет</td></tr>
+        <tr><td class="api">Authorization</td><td>да</td><td>нет</td></tr>
+        <tr><td class="api">Flags</td><td>да</td><td>нет</td></tr>
+        <tr><td class="api">ServerTime</td><td>да, если <code>serverTime()</code> ответил</td><td>нет</td></tr>
+        <tr><td class="api">Review, GameLabel</td><td>да</td><td>нет</td></tr>
+        <tr><td class="api">PlatformMute</td><td>нет</td><td>да</td></tr>
+      </table></div>
+      <p><code>Platform.Supports(capability)</code> смотрит на модули активной конфигурации: например Purchases false, если модуль Unsupported, а ServerTime true только после ответа <code>serverTime()</code>.</p>
+      <div class="codebox solo"><div class="file"><b>PlatformChecks.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE PlatformChecks}}</code></pre></div>
+      <div class="note info"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B93FF" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span>Не проверяйте площадку через define-символы. Спрашивайте возможность: так код останется рабочим, когда появится новая площадка.</span></div>
+    </section>
+
+    <section id="device" data-keywords="устройство мобильный телефон планшет десктоп курсор device cursor">
+      <h2>Устройство</h2>
+      <p class="lead">Тип устройства игрока и курсор.</p>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">Device.Type, IsMobile</td><td><code>Desktop</code>, <code>Mobile</code>, <code>Tablet</code> или <code>TV</code>; <code>IsMobile</code> true для Mobile и Tablet. Яндекс: <code>ysdk.deviceInfo.type</code>. YouTube: по user agent (ipad и tablet дают Tablet; mobile, android и iphone дают Mobile; иначе Desktop). Пока модуль Platform не готов, Desktop.</td></tr>
+        <tr><td class="api">Device.CursorVisible, CursorLock</td><td>Замена <code>Cursor.visible</code> и <code>Cursor.lockState</code>. Значения возвращаются после системной паузы, которая показывает курсор.</td></tr>
+      </table></div>
+      <p>В редакторе устройство переключается в оверлее вкладки Game, в том числе вне Play Mode.</p>
+    </section>
+
+    <section id="review-label" data-keywords="отзыв оценка ярлык рабочий стол review gamelabel">
+      <h2>Отзыв и ярлык</h2>
+      <p class="lead">Просьба оценить игру и ярлык на рабочем столе. Есть только на Яндексе, на YouTube модули Unsupported.</p>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">Review.CanRequest<br>Request(onResult)</td><td>При старте <code>feedback.canReview()</code>. <code>Request</code> вызывает <code>feedback.requestReview()</code>, результат <code>feedbackSent</code>. После запроса <code>CanRequest</code> становится false.</td></tr>
+        <tr><td class="api">GameLabel.CanShow<br>ShowDialog(onResult)</td><td>При старте <code>shortcut.canShowPrompt()</code>. <code>ShowDialog</code> вызывает <code>shortcut.showPrompt()</code>, true если <code>outcome</code> равен <code>accepted</code>. После показа <code>CanShow</code> становится false.</td></tr>
+      </table></div>
+      <p>Если <code>CanRequest</code> или <code>CanShow</code> false, колбэк сразу получает false.</p>
+      <div class="codebox solo"><div class="file"><b>ReviewAndGameLabel.cs</b>Samples~/Examples</div><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">{{EXAMPLE ReviewAndGameLabel}}</code></pre></div>
+    </section>
+
+    <section id="links" data-keywords="ссылки переход страница разработчика другая игра домен links openurl">
+      <h2>Ссылки</h2>
+      <p class="lead">Переход на страницу разработчика, на другую свою игру или на любой адрес. Есть только на Яндексе, на YouTube модуль Unsupported.</p>
+      <p>Домен площадки приходит при инициализации (<code>environment.i18n.tld</code>): у одной и той же игры это <code>ru</code>, <code>com</code>, <code>com.tr</code> и так далее. Поэтому ссылки на Яндекс собираются из домена игрока, а не зашиваются в код. Имя разработчика задаётся в конфигурации, в поле Developer name провайдера ссылок.</p>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">Links.Domain</td><td>Домен площадки. Пустая строка, пока модуль не Ready.</td></tr>
+        <tr><td class="api">Open(url)</td><td>Открывает адрес в новой вкладке: <code>window.open(url, "_blank")</code>. Пустой адрес бросает <code>ArgumentException</code>; если модуль не Ready, пишется предупреждение и ничего не открывается.</td></tr>
+        <tr><td class="api">OpenOnPlatformDomain(url)</td><td>Подставляет домен вместо <code>{domain}</code> и открывает результат: <code>https://yandex.{domain}/games</code> станет <code>https://yandex.ru/games</code>. Если домена нет, адрес открывается как есть.</td></tr>
+        <tr><td class="api">OpenDeveloperPage()</td><td><code>https://yandex.&lt;домен&gt;/games/developer?name=&lt;имя&gt;</code>. Если Developer name пустой, пишется предупреждение и ничего не открывается.</td></tr>
+        <tr><td class="api">OpenGamePage(gameId)</td><td><code>https://yandex.&lt;домен&gt;/games/app/&lt;gameId&gt;</code>. Пустой id бросает <code>ArgumentException</code>.</td></tr>
+      </table></div>
+      <p>В редакторе домен равен <code>ru</code>, а ссылка открывается в системном браузере через <code>Application.OpenURL</code> и печатается в консоль. Поддержка проверяется как у остальных модулей: <code>JTLSDK.Platform.Supports(Capability.Links)</code>.</p>
+    </section>
+
+    <section id="platforms" data-keywords="возможности площадок яндекс youtube поддержка сравнение">
+      <h2>Возможности площадок</h2>
+      <p class="lead">Модуль, которого нет на площадке, отвечает безопасно: <code>NotSupported</code>, значение по умолчанию или пустой список.</p>
+      <div class="tablewrap"><table>
+        <tr><th>Возможность</th><th><span class="plat"><img src="{{IMAGE Editor/Toolkit/Icons/Portals/yandex-games.png}}" alt="">Yandex Games</span></th><th><span class="plat"><img src="{{IMAGE Editor/Toolkit/Icons/Portals/youtube-playables.png}}" alt="">YouTube Playables</span></th></tr>
+        <tr><td>Interstitial и rewarded</td><td class="yes">Да</td><td class="yes">Да</td></tr>
+        <tr><td>Баннер</td><td class="yes">Да</td><td class="no">Нет</td></tr>
+        <tr><td>Покупки</td><td class="yes">Да, в YAN</td><td class="no">Нет</td></tr>
+        <tr><td>Сохранения</td><td class="yes">Облако, до 200 KiB</td><td class="yes">Облако, до 3 MiB</td></tr>
+        <tr><td>Лидерборды</td><td class="yes">Несколько досок, таблица</td><td class="yes">Одна таблица, только счёт</td></tr>
+        <tr><td>Авторизация игрока</td><td class="yes">Да</td><td class="no">Анонимно</td></tr>
+        <tr><td>Удалённые флаги</td><td class="yes">Да</td><td class="no">Значения по умолчанию</td></tr>
+        <tr><td>Время сервера</td><td class="yes">Да</td><td class="no">Время устройства</td></tr>
+        <tr><td>Отзыв и ярлык</td><td class="yes">Да</td><td class="no">Нет</td></tr>
+        <tr><td>Ссылки</td><td class="yes">Да, домен площадки</td><td class="no">Нет</td></tr>
+        <tr><td>Пауза от площадки</td><td class="yes">game_api_pause</td><td class="yes">onPause, обязательно</td></tr>
+        <tr><td>Звук, выключенный площадкой</td><td class="no">Нет</td><td class="yes">Да</td></tr>
+        <tr><td>Сжатие сборки</td><td class="yes">Gzip или Brotli</td><td class="yes">Только Disabled</td></tr>
+      </table></div>
+    </section>
+
+    <section id="ai">
+      <h2>Для ИИ</h2>
+      <p class="lead">Отдайте документацию ассистенту, чтобы он писал код под настоящий API.</p>
+      <p>Кнопка <b>Для ИИ</b> в шапке скачивает <a href="https://meepifiev.github.io/com.jtlstudio.sdk/llms.txt" download="llms.txt" target="_blank" rel="noopener">llms.txt</a>: вся документация, правила для ассистента и справочник API одним файлом, как у крупных SDK. Там же можно скачать страницу в Markdown или скопировать готовый промпт.</p>
+      <p><button class="btn btn-s" type="button" id="aibtn2">Открыть панель</button></p>
+    </section>
+
+  </main>
+
+  <aside class="toc" aria-label="На этой странице">
+    <b>На этой странице</b>
+    <a href="#start">Для чего нужен JTL SDK</a>
+    <a href="#install">Установка</a>
+    <a href="#quickstart">Инициализация</a>
+    <a href="#modules">Модули SDK</a>
+    <a href="#purchases">Покупки</a>
+    <a href="#saves">Сохранения</a>
+    <a href="#platforms">Возможности площадок</a>
+    <a href="#ai">Для ИИ</a>
+  </aside>
+</div>
+
+<footer>
+  <img src="{{IMAGE Editor/Toolkit/Icons/Brand/jtlsdk-logo.png}}" alt="JTL SDK">
+  <span>Документация к версии {{VERSION}}</span>
+  <span class="grow"></span>
+  <a href="https://github.com/meepifiev/com.jtlstudio.sdk" target="_blank" rel="noopener">GitHub</a>
+  <a href="https://t.me/jtlstudio" target="_blank" rel="noopener">Поддержка</a>
+  <span>MIT · JTL Studio</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/csharp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  if (window.hljs) { try { hljs.highlightAll(); } catch (error) {} }
+
+  document.querySelectorAll(".tabs").forEach(function (tabs) {
+    tabs.addEventListener("click", function (event) {
+      var button = event.target.closest("button[data-tab]");
+      if (!button) { return; }
+      tabs.querySelectorAll("button").forEach(function (other) { other.setAttribute("aria-selected", String(other === button)); });
+      tabs.parentElement.querySelectorAll("[data-panel]").forEach(function (panel) { panel.hidden = panel.dataset.panel !== button.dataset.tab; });
+    });
+  });
+
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) { return navigator.clipboard.writeText(text); }
+    return new Promise(function (resolve, reject) {
+      var area = document.createElement("textarea");
+      area.value = text; area.style.position = "fixed"; area.style.opacity = "0";
+      document.body.appendChild(area); area.select();
+      try { document.execCommand("copy"); resolve(); } catch (error) { reject(error); }
+      document.body.removeChild(area);
+    });
+  }
+  function flash(button, text) {
+    var old = button.textContent;
+    button.textContent = text || "Скопировано"; button.classList.add("done");
+    setTimeout(function () { button.textContent = old; button.classList.remove("done"); }, 1600);
+  }
+  document.querySelectorAll(".copy").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var code = button.parentElement.querySelector("code");
+      copy(code.innerText).then(function () { flash(button); }).catch(function () { flash(button, "Не вышло"); });
+    });
+  });
+
+  function cellText(cell) {
+    return [].map.call(cell.childNodes, function (child) { return child.nodeName === "BR" ? "\n" : child.textContent; }).join("").trim().replace(/\s*\n\s*/g, ", ").replace(/\s+/g, " ");
+  }
+
+  function toMarkdown() {
+    var out = ["# JTL SDK {{VERSION}}", "", "Unity-пакет: одна WebGL-сборка для Yandex Games и YouTube Playables через один API.", ""];
+    document.querySelectorAll("#doc section").forEach(function (section) {
+      section.childNodes.forEach(function (node) { walk(node, out); });
+      out.push("");
+    });
+    return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  }
+  function walk(node, out) {
+    if (node.nodeType !== 1 || node.classList.contains("copy") || node.classList.contains("file") || node.classList.contains("tabs")) { return; }
+    var tag = node.tagName;
+    if (tag === "H2") { out.push("", "## " + node.textContent.trim(), ""); }
+    else if (tag === "H3") { out.push("", "### " + node.textContent.trim(), ""); }
+    else if (tag === "H4") { out.push("", "#### " + node.textContent.trim(), ""); }
+    else if (tag === "P") { out.push(node.textContent.trim(), ""); }
+    else if (tag === "UL" || tag === "OL") { node.querySelectorAll("li").forEach(function (item, index) { out.push((tag === "OL" ? (index + 1) + ". " : "- ") + item.textContent.trim().replace(/\s+/g, " ")); }); out.push(""); }
+    else if (tag === "PRE") {
+      var code = node.querySelector("code");
+      var language = (code && (code.className.match(/language-(\w+)/) || [])[1]) || "";
+      out.push("", "```" + (language === "plaintext" ? "" : language), code ? code.innerText : node.innerText, "```", "");
+    }
+    else if (tag === "TABLE") {
+      node.querySelectorAll("tr").forEach(function (row, index) {
+        var cells = [].map.call(row.children, function (cell) { return cellText(cell); });
+        out.push("| " + cells.join(" | ") + " |");
+        if (index === 0) { out.push("|" + cells.map(function () { return " --- "; }).join("|") + "|"); }
+      });
+      out.push("");
+    }
+    else if (node.children && node.children.length) { [].forEach.call(node.children, function (child) { walk(child, out); }); }
+  }
+
+  var PROMPT = [
+    "Ты пишешь код Unity-игры, которая публикуется через JTL SDK {{VERSION}}.",
+    "Правила:",
+    "1. Все вызовы площадки делаются только через статический JTLSDK: Ads, Data, Payments, Leaderboards, Flags, Language, GameEvents, Pause, Time, Audio, Player, Platform, Device, Review, GameLabel.",
+    "2. SDK запускается один раз: if (!JTLSDK.IsCreated) JTLSDK.Create(); дальше JTLSDK.WhenReady(...). После загрузки вызывай JTLSDK.GameEvents.GameReady().",
+    "3. Вместо PlayerPrefs используй JTLSDK.Data, вместо Time.timeScale используй JTLSDK.Time.Scale, вместо AudioListener.volume и pause используй JTLSDK.Audio.Volume и JTLSDK.Audio.Paused.",
+    "4. Результаты приходят в колбэках (Action<AdResult>, Action<bool>, onSuccess и onError у покупок), async/await и исключений у SDK нет.",
+    "5. Покупка: Payments.Purchase(id, onSuccess, onError), товар выдаётся в onSuccess. Невыданные покупки восстанавливаются через Payments.RestorePurchases после WhenReady.",
+    "6. Проверяй возможности через IsSupported и JTLSDK.Platform.Supports(Capability), а не через define-символы.",
+    "Ниже документация SDK."
+  ].join("\n");
+
+  function download(name, text, type) {
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([text], { type: type }));
+    link.download = name;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
+  }
+
+  var scrim = null;
+  var lastFocus = null;
+  function openOverlay(content, focusTarget) {
+    closeOverlay();
+    lastFocus = document.activeElement;
+    scrim = document.createElement("div");
+    scrim.className = "scrim";
+    scrim.appendChild(content);
+    document.body.appendChild(scrim);
+    scrim.addEventListener("click", function (event) { if (event.target === scrim) { closeOverlay(); } });
+    document.addEventListener("keydown", onOverlayKey);
+    if (focusTarget) { focusTarget.focus(); }
+  }
+  function closeOverlay() {
+    if (!scrim) { return; }
+    scrim.remove(); scrim = null;
+    document.removeEventListener("keydown", onOverlayKey);
+    if (lastFocus) { lastFocus.focus(); }
+  }
+  function onOverlayKey(event) { if (event.key === "Escape") { closeOverlay(); } }
+
+  function openAi() {
+    var sheet = document.createElement("div");
+    sheet.className = "sheet";
+    sheet.setAttribute("role", "dialog");
+    sheet.setAttribute("aria-modal", "true");
+    sheet.setAttribute("aria-label", "Документация для ИИ");
+    sheet.innerHTML =
+      "<h3>Документация для ИИ</h3><p>Скачайте документацию файлом или скопируйте промпт и отдайте ассистенту.</p>" +
+      "<button class=\"opt\" type=\"button\" data-act=\"md\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M6.5 3.5h7l4.5 4.5v12a1 1 0 0 1-1 1H6.5a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1z\"/><path d=\"M13.5 3.5V8H18\"/></svg><span><b>Скачать Markdown</b><span>Страница документации с примерами кода, файл .md</span></span><em></em></button>" +
+      "<a class=\"opt\" href=\"https://meepifiev.github.io/com.jtlstudio.sdk/llms.txt\" download=\"llms.txt\" target=\"_blank\" rel=\"noopener\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 4v11\"/><path d=\"M7.5 10.5L12 15l4.5-4.5\"/><path d=\"M5 19.5h14\"/></svg><span><b>Скачать llms.txt</b><span>Вся документация, правила и справочник API одним файлом</span></span><em></em></a>" +
+      "<button class=\"opt\" type=\"button\" data-act=\"prompt\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4.5 5.5h15v10h-9l-4 3.5z\"/></svg><span><b>Промпт с правилами</b><span>Инструкция и вся документация следом</span></span><em></em></button>" +
+      "<button class=\"close\" type=\"button\">Закрыть</button>";
+    sheet.addEventListener("click", function (event) {
+      if (event.target.closest(".close")) { closeOverlay(); return; }
+      var option = event.target.closest(".opt");
+      if (!option || !option.dataset.act) { return; }
+      var mark = option.querySelector("em");
+      if (option.dataset.act === "md") {
+        download("jtlsdk-docs.md", toMarkdown(), "text/markdown;charset=utf-8");
+        mark.textContent = "Скачано";
+        setTimeout(function () { mark.textContent = ""; }, 1800);
+        return;
+      }
+      var text = PROMPT + "\n\n" + toMarkdown();
+      copy(text).then(function () {
+        mark.textContent = "Скопировано";
+        setTimeout(function () { mark.textContent = ""; }, 1800);
+      }).catch(function () { mark.textContent = "Не вышло"; });
+    });
+    openOverlay(sheet, sheet.querySelector(".opt"));
+  }
+  document.getElementById("aibtn").addEventListener("click", openAi);
+  document.getElementById("aibtn2").addEventListener("click", openAi);
+
+  var bar = document.getElementById("bar");
+  var searchBox = bar.querySelector(".search");
+  var searchInput = document.getElementById("search");
+  var results = document.getElementById("results");
+  if (!/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) { document.getElementById("search-key").textContent = "Ctrl K"; }
+
+  function normalize(text) { return text.toLowerCase().replace(/ё/g, "е"); }
+  function flatten(text) { return text.replace(/\s+/g, " ").trim(); }
+  function escapeHtml(text) { return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  var groups = {};
+  var groupName = "";
+  [].forEach.call(document.getElementById("side").children, function (node) {
+    if (node.tagName === "H5") { groupName = node.textContent.trim(); }
+    else if (node.tagName === "A") { groups[node.getAttribute("href").slice(1)] = groupName; }
+  });
+
+  var entries = [];
+  document.querySelectorAll("#doc section").forEach(function (section) {
+    var heading = section.querySelector("h2");
+    if (!heading || section.id === "ai") { return; }
+    var sectionTitle = heading.textContent.trim();
+    var entry = { id: section.id, anchor: heading, title: sectionTitle, where: groups[section.id] || "", keywords: section.dataset.keywords || "", blocks: [] };
+    entries.push(entry);
+    var subsection = 0;
+    section.querySelectorAll("h3, p, li, tr, .note span, pre code").forEach(function (node) {
+      if (node.tagName === "H3") {
+        if (!node.id) { node.id = section.id + "-" + (++subsection); }
+        var title = node.textContent.trim();
+        entry = { id: node.id, anchor: node, title: title, where: sectionTitle, keywords: "", blocks: [] };
+        entries.push(entry);
+      } else if (node.tagName === "CODE") {
+        node.textContent.split("\n").forEach(function (line) {
+          var text = flatten(line);
+          if (text.length > 2 && !/^[{}()\[\];,]+$/.test(text)) { entry.blocks.push({ text: text, code: true }); }
+        });
+      } else if (!node.querySelector("button")) {
+        var text = node.tagName === "TR" ? [].map.call(node.children, cellText).join(" · ") : flatten(node.textContent);
+        if (text) { entry.blocks.push({ text: text, code: false }); }
+      }
+    });
+  });
+  entries.forEach(function (entry, order) {
+    entry.order = order;
+    entry.key = normalize(entry.title);
+    entry.keywords = normalize(entry.keywords);
+    entry.all = normalize(entry.title + " " + entry.keywords + " " + entry.where + " " + entry.blocks.map(function (block) { return block.text; }).join(" "));
+    entry.blocks.forEach(function (block) { block.key = normalize(block.text); });
+  });
+
+  function snippet(text, terms) {
+    var key = normalize(text);
+    var first = -1;
+    terms.forEach(function (term) { var at = key.indexOf(term); if (at >= 0 && (first < 0 || at < first)) { first = at; } });
+    var begin = Math.max(0, first - 50);
+    if (begin > 0) { var space = text.indexOf(" ", begin); begin = space >= 0 && space < first ? space + 1 : begin; }
+    var finish = Math.min(text.length, begin + 160);
+    var piece = text.slice(begin, finish);
+    var lower = key.slice(begin, finish);
+    var marks = [];
+    terms.forEach(function (term) {
+      for (var at = lower.indexOf(term); at >= 0; at = lower.indexOf(term, at + term.length)) { marks.push([at, at + term.length]); }
+    });
+    marks.sort(function (left, right) { return left[0] - right[0]; });
+    var html = "";
+    var cursor = 0;
+    marks.forEach(function (mark) {
+      if (mark[0] < cursor) { return; }
+      html += escapeHtml(piece.slice(cursor, mark[0])) + "<mark>" + escapeHtml(piece.slice(mark[0], mark[1])) + "</mark>";
+      cursor = mark[1];
+    });
+    html += escapeHtml(piece.slice(cursor));
+    return (begin > 0 ? "…" : "") + html + (finish < text.length ? "…" : "");
+  }
+
+  function find(query) {
+    var terms = normalize(flatten(query)).split(" ").filter(Boolean);
+    if (!terms.length) { return { terms: terms, hits: [] }; }
+    var hits = [];
+    entries.forEach(function (entry) {
+      if (!terms.every(function (term) { return entry.all.indexOf(term) >= 0; })) { return; }
+      var score = 0;
+      terms.forEach(function (term) {
+        if (entry.key.indexOf(term) === 0) { score += 30; }
+        else if (entry.key.indexOf(term) > 0) { score += 18; }
+        else if (entry.keywords.indexOf(term) >= 0) { score += 14; }
+      });
+      var best = null;
+      var bestCount = 0;
+      entry.blocks.forEach(function (block) {
+        var count = terms.filter(function (term) { return block.key.indexOf(term) >= 0; }).length;
+        if (count > bestCount) { best = block; bestCount = count; }
+      });
+      score += bestCount * 4;
+      if (entry.anchor.tagName === "H2") { score += 2; }
+      hits.push({ entry: entry, block: best || entry.blocks[0], score: score });
+    });
+    hits.sort(function (left, right) { return right.score - left.score || left.entry.order - right.entry.order; });
+    return { terms: terms, hits: hits.slice(0, 12) };
+  }
+
+  var found = [];
+  var active = 0;
+  function renderResults() {
+    var query = searchInput.value;
+    var result = find(query);
+    found = result.hits;
+    active = Math.min(active, Math.max(found.length - 1, 0));
+    if (!flatten(query)) { hideResults(); return; }
+    var html = found.length ? found.map(function (hit, position) {
+      var where = hit.entry.where ? "<span class=\"where\">" + escapeHtml(hit.entry.where) + "</span>" : "";
+      var text = hit.block ? "<span class=\"snippet" + (hit.block.code ? " code" : "") + "\">" + snippet(hit.block.text, result.terms) + "</span>" : "";
+      return "<a href=\"#" + hit.entry.id + "\" role=\"option\" data-position=\"" + position + "\"" + (position === active ? " class=\"hit\" aria-selected=\"true\"" : "") + ">" + where + "<span class=\"title\">" + snippet(hit.entry.title, result.terms) + "</span>" + text + "</a>";
+    }).join("") : "<div class=\"empty\">Ничего не нашлось по запросу «" + escapeHtml(flatten(query)) + "»</div>";
+    results.innerHTML = html + "<div class=\"foot\"><span><kbd>↑</kbd><kbd>↓</kbd>выбрать</span><span><kbd>Enter</kbd>открыть</span><span><kbd>Esc</kbd>закрыть</span></div>";
+    results.hidden = false;
+    searchInput.setAttribute("aria-expanded", "true");
+    var current = results.querySelector("a.hit");
+    if (current) { current.scrollIntoView({ block: "nearest" }); }
+  }
+  function hideResults() {
+    results.hidden = true;
+    searchInput.setAttribute("aria-expanded", "false");
+  }
+  function openSearch() {
+    bar.classList.add("finding");
+    searchInput.focus();
+    searchInput.select();
+    if (flatten(searchInput.value)) { renderResults(); }
+  }
+  function closeSearch() {
+    hideResults();
+    bar.classList.remove("finding");
+    searchInput.blur();
+  }
+  function go(position) {
+    var hit = found[position];
+    if (!hit) { return; }
+    var target = hit.entry.anchor;
+    closeSearch();
+    target.scrollIntoView({ block: "start" });
+    try { history.replaceState(null, "", "#" + hit.entry.id); } catch (error) {}
+    target.classList.remove("found");
+    void target.offsetWidth;
+    target.classList.add("found");
+    setTimeout(function () { target.classList.remove("found"); }, 1700);
+  }
+
+  searchInput.addEventListener("input", function () { active = 0; renderResults(); });
+  searchInput.addEventListener("focus", function () { if (flatten(searchInput.value)) { renderResults(); } });
+  searchInput.addEventListener("keydown", function (event) {
+    if (event.key === "ArrowDown") { event.preventDefault(); active = Math.min(active + 1, found.length - 1); renderResults(); }
+    else if (event.key === "ArrowUp") { event.preventDefault(); active = Math.max(active - 1, 0); renderResults(); }
+    else if (event.key === "Enter") { event.preventDefault(); go(active); }
+    else if (event.key === "Escape") { event.preventDefault(); if (searchInput.value && !results.hidden) { searchInput.value = ""; hideResults(); } else { closeSearch(); } }
+  });
+  results.addEventListener("mousedown", function (event) { event.preventDefault(); });
+  results.addEventListener("click", function (event) {
+    var link = event.target.closest("a[data-position]");
+    if (!link) { return; }
+    event.preventDefault();
+    go(Number(link.dataset.position));
+  });
+  results.addEventListener("mousemove", function (event) {
+    var link = event.target.closest("a[data-position]");
+    if (!link || Number(link.dataset.position) === active) { return; }
+    var previous = results.querySelector("a.hit");
+    if (previous) { previous.classList.remove("hit"); previous.removeAttribute("aria-selected"); }
+    active = Number(link.dataset.position);
+    link.classList.add("hit");
+    link.setAttribute("aria-selected", "true");
+  });
+  searchBox.addEventListener("focusout", function (event) {
+    if (!searchBox.contains(event.relatedTarget)) { hideResults(); if (!searchInput.value) { bar.classList.remove("finding"); } }
+  });
+  document.getElementById("searchbtn").addEventListener("click", openSearch);
+  document.getElementById("search-close").addEventListener("click", function () { searchInput.value = ""; closeSearch(); });
+  document.addEventListener("keydown", function (event) {
+    var typing = /INPUT|TEXTAREA/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); closeOverlay(); openSearch(); }
+    else if (event.key === "/" && !typing && !scrim) { event.preventDefault(); openSearch(); }
+  });
+
+  var side = document.getElementById("side");
+  document.getElementById("burger").addEventListener("click", function () { side.classList.toggle("open"); });
+  side.addEventListener("click", function (event) { if (event.target.tagName === "A") { side.classList.remove("open"); } });
+
+  var sections = [].slice.call(document.querySelectorAll("#doc section"));
+  var tocLinks = [].slice.call(document.querySelectorAll(".toc a"));
+  var sideLinks = [].slice.call(document.querySelectorAll(".side a"));
+  var sideActive = null;
+  var tocIds = tocLinks.map(function (link) { return link.getAttribute("href").slice(1); });
+  function spy() {
+    var line = window.scrollY + 140;
+    var current = sections[0];
+    sections.forEach(function (section) { if (section.offsetTop <= line) { current = section; } });
+    sideLinks.forEach(function (link) { link.classList.toggle("on", link.getAttribute("href") === "#" + current.id); });
+    var activeLink = side.querySelector("a.on");
+    if (activeLink && activeLink !== sideActive) {
+      sideActive = activeLink;
+      if (activeLink.offsetTop < side.scrollTop + 40 || activeLink.offsetTop + activeLink.offsetHeight > side.scrollTop + side.clientHeight - 40) {
+        side.scrollTop = activeLink.offsetTop - side.clientHeight / 2;
+      }
+    }
+    var tocCurrent = null;
+    sections.forEach(function (section) { if (section.offsetTop <= line && tocIds.indexOf(section.id) >= 0) { tocCurrent = section.id; } });
+    tocLinks.forEach(function (link) { link.classList.toggle("on", link.getAttribute("href") === "#" + (tocCurrent || tocIds[0])); });
+  }
+  window.addEventListener("scroll", spy, { passive: true });
+  spy();
+})();
+</script>

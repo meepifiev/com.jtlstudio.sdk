@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:jtl="JTLStudio.SDK.Editor.Toolkit.Components">
+    <ui:VisualElement class="jtl-column jtl-vstack-16">
+        <jtl:SectionHeader title-key="configurations.title">
+            <jtl:ToolkitButton name="new-configuration" text-key="configurations.newConfiguration" icon="plus" trailing-icon="chevron-down" />
+        </jtl:SectionHeader>
+        <ui:VisualElement name="configuration-cards" class="jtl-configuration-grid" />
+        <jtl:Card title-key="configurations.generalSettings" spacing="12">
+            <jtl:FieldRow label-key="configurations.initializationTimeout">
+                <jtl:NumberFieldWithUnit name="initialization-timeout" unit-key="unit.seconds" width="110" />
+            </jtl:FieldRow>
+            <jtl:FieldRow label-key="configurations.autosaveDelay">
+                <jtl:NumberFieldWithUnit name="autosave-delay" unit-key="unit.seconds" width="110" />
+            </jtl:FieldRow>
+            <jtl:FieldRow label-key="configurations.loggingLevel">
+                <jtl:Dropdown name="logging-level" width="220" />
+            </jtl:FieldRow>
+        </jtl:Card>
+    </ui:VisualElement>
+</ui:UXML>

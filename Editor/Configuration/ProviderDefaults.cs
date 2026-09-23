@@ -1,0 +1,67 @@
+using JTLStudio.SDK.Providers;
+using JTLStudio.SDK.YandexGames;
+using JTLStudio.SDK.YouTubePlayables;
+
+namespace JTLStudio.SDK.Editor.Configuration
+{
+    public class ProviderDefaults
+    {
+        public void Apply(SdkConfiguration configuration, PlatformId platform)
+        {
+            switch (platform)
+            {
+                case PlatformId.YandexGames:
+                    configuration.PlatformProvider = new YandexGamesPlatformProvider();
+                    configuration.Ads = new YandexGamesAdsProvider();
+                    configuration.Data = new YandexGamesDataProvider();
+                    configuration.Payments = new YandexGamesPaymentsProvider();
+                    configuration.LanguageProvider = new YandexGamesLanguageProvider();
+                    configuration.Player = new YandexGamesPlayerProvider();
+                    configuration.Leaderboards = new YandexGamesLeaderboardsProvider();
+                    configuration.Flags = new YandexGamesFlagsProvider();
+                    configuration.TimeProvider = new YandexGamesTimeProvider();
+                    configuration.GameEvents = new YandexGamesGameEventsProvider();
+                    configuration.Review = new YandexGamesReviewProvider();
+                    configuration.GameLabel = new YandexGamesGameLabelProvider();
+                    configuration.Links = new YandexGamesLinksProvider();
+                    configuration.DefineSymbol = "JTLSDK_YANDEX_GAMES";
+                    break;
+
+                case PlatformId.YouTubePlayables:
+                    configuration.PlatformProvider = new YouTubePlayablesPlatformProvider();
+                    configuration.Ads = new YouTubePlayablesAdsProvider();
+                    configuration.Data = new YouTubePlayablesDataProvider();
+                    configuration.Payments = new UnsupportedPaymentsProvider();
+                    configuration.LanguageProvider = new YouTubePlayablesLanguageProvider();
+                    configuration.Player = new UnsupportedPlayerProvider();
+                    configuration.Leaderboards = new YouTubePlayablesLeaderboardsProvider();
+                    configuration.Flags = new UnsupportedFlagsProvider();
+                    configuration.TimeProvider = new FallbackTimeProvider();
+                    configuration.GameEvents = new YouTubePlayablesGameEventsProvider();
+                    configuration.Review = new UnsupportedReviewProvider();
+                    configuration.GameLabel = new UnsupportedGameLabelProvider();
+                    configuration.Links = new UnsupportedLinksProvider();
+                    configuration.DefineSymbol = "JTLSDK_YOUTUBE_PLAYABLES";
+                    configuration.PauseOnFocusLoss = false;
+                    break;
+
+                default:
+                    configuration.PlatformProvider = new FallbackPlatformProvider();
+                    configuration.Ads = new UnsupportedAdsProvider();
+                    configuration.Data = new UnsupportedDataProvider();
+                    configuration.Payments = new UnsupportedPaymentsProvider();
+                    configuration.LanguageProvider = new FallbackLanguageProvider();
+                    configuration.Player = new UnsupportedPlayerProvider();
+                    configuration.Leaderboards = new UnsupportedLeaderboardsProvider();
+                    configuration.Flags = new UnsupportedFlagsProvider();
+                    configuration.TimeProvider = new FallbackTimeProvider();
+                    configuration.GameEvents = new FallbackGameEventsProvider();
+                    configuration.Review = new UnsupportedReviewProvider();
+                    configuration.GameLabel = new UnsupportedGameLabelProvider();
+                    configuration.Links = new UnsupportedLinksProvider();
+                    configuration.DefineSymbol = "";
+                    break;
+            }
+        }
+    }
+}
