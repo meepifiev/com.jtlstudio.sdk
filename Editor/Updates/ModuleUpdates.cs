@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using JTLStudio.SDK.Services.Json;
 using UnityEditor;
 using UnityEngine.Networking;
 
@@ -8,13 +7,13 @@ namespace JTLStudio.SDK.Editor.Updates
 {
     public class ModuleUpdates
     {
-        private const string ApiRoot = "https://api.github.com/repos/";
+        private const string TagsRoot = "https://github.com/";
+        private const string TagsFeed = "/tags.atom";
         private const string UserAgent = "JTLSDK-Toolkit";
 
         private static readonly Dictionary<string, string> Tags = new Dictionary<string, string>();
         private static readonly HashSet<string> Pending = new HashSet<string>();
 
-        private readonly JsonParser _parser = new JsonParser();
         private readonly SdkUpdates _updates = new SdkUpdates();
 
         public event Action Changed;
@@ -51,9 +50,8 @@ namespace JTLStudio.SDK.Editor.Updates
             }
 
             Pending.Add(repository);
-            UnityWebRequest request = UnityWebRequest.Get(ApiRoot + repository + "/tags?per_page=100");
+            UnityWebRequest request = UnityWebRequest.Get(TagsRoot + repository + TagsFeed);
             request.SetRequestHeader("User-Agent", UserAgent);
-            request.SetRequestHeader("Accept", "application/vnd.github+json");
             UnityWebRequestAsyncOperation operation = request.SendWebRequest();
 
             void Poll()
@@ -73,35 +71,43 @@ namespace JTLStudio.SDK.Editor.Updates
             EditorApplication.update += Poll;
         }
 
-        private string Highest(string json)
+        public string Highest(string feed)
         {
             string highest = "";
 
-            try
+            if (string.IsNullOrEmpty(feed))
             {
-                if (_parser.Parse(json) is List<object> items == false)
-                {
-                    return "";
-                }
-
-                foreach (object item in items)
-                {
-                    if (item is Dictionary<string, object> tag == false || tag.TryGetValue("name", out object name) == false || name is string text == false)
-                    {
-                        continue;
-                    }
-
-                    string version = text.StartsWith("v") ? text.Substring(1) : text;
-
-                    if (string.IsNullOrEmpty(highest) || _updates.CompareVersions(version, highest) > 0)
-                    {
-                        highest = version;
-                    }
-                }
+                return highest;
             }
-            catch (FormatException)
+
+            int cursor = 0;
+
+            while (true)
             {
-                return "";
+                int entry = feed.IndexOf("<entry>", cursor, StringComparison.Ordinal);
+
+                if (entry < 0)
+                {
+                    break;
+                }
+
+                int titleStart = feed.IndexOf("<title>", entry, StringComparison.Ordinal);
+                int titleEnd = titleStart < 0 ? -1 : feed.IndexOf("</title>", titleStart, StringComparison.Ordinal);
+
+                if (titleStart < 0 || titleEnd < 0)
+                {
+                    break;
+                }
+
+                string tag = feed.Substring(titleStart + 7, titleEnd - titleStart - 7).Trim();
+                string version = tag.StartsWith("v") ? tag.Substring(1) : tag;
+
+                if (string.IsNullOrEmpty(version) == false && (string.IsNullOrEmpty(highest) || _updates.CompareVersions(version, highest) > 0))
+                {
+                    highest = version;
+                }
+
+                cursor = titleEnd;
             }
 
             return highest;

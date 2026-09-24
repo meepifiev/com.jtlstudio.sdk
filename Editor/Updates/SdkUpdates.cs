@@ -89,7 +89,7 @@ namespace JTLStudio.SDK.Editor.Updates
 
         public void CheckOnce()
         {
-            if (Releases == null)
+            if (Releases == null && DateTime.Now - new DateTime(CheckedTicks) > CacheLifetime)
             {
                 Check();
             }

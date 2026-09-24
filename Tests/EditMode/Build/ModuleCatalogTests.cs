@@ -32,6 +32,35 @@ namespace JTLStudio.SDK.Tests.Build
         }
 
         [Test]
+        public void CatalogComesFromTheRawFileWithoutTheApi()
+        {
+            StringAssert.StartsWith("https://raw.githubusercontent.com/", ModuleCatalog.CatalogUrl);
+        }
+
+        [Test]
+        public void FailedRequestFallsBackToTheShippedFile()
+        {
+            ModuleCatalogResult result = _catalog.Local("HTTP/1.1 403 Forbidden");
+
+            Assert.IsTrue(result.IsSuccess);
+            Assert.Greater(result.Modules.Count, 0);
+        }
+
+        [Test]
+        public void HighestTagIsReadFromTheAtomFeed()
+        {
+            string feed = "<feed><title>Tags</title><entry><title>v1.2.0</title></entry><entry><title>v1.10.1</title></entry><entry><title>v1.9.0</title></entry></feed>";
+
+            Assert.AreEqual("1.10.1", new ModuleUpdates().Highest(feed));
+        }
+
+        [Test]
+        public void EmptyFeedHasNoVersion()
+        {
+            Assert.AreEqual("", new ModuleUpdates().Highest("<feed><title>Tags</title></feed>"));
+        }
+
+        [Test]
         public void CatalogWithoutModulesListFails()
         {
             Assert.IsFalse(_catalog.Parse("{}").IsSuccess);

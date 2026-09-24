@@ -9,8 +9,11 @@ namespace JTLStudio.SDK.Editor.Updates
     public class GitHubReleases
     {
         private const string ApiRoot = "https://api.github.com/repos/";
+        public const string RateLimit = "GitHub allows 60 anonymous requests per hour and the limit is spent. The check works again within an hour.";
+
         private const string UserAgent = "JTLSDK-Toolkit";
         private const long NotFound = 404;
+        private const long Forbidden = 403;
 
         private readonly JsonParser _parser = new JsonParser();
 
@@ -66,6 +69,11 @@ namespace JTLStudio.SDK.Editor.Updates
             if (request.responseCode == NotFound)
             {
                 return new ReleaseCheckResult(false, true, request.error, new List<ReleaseInfo>());
+            }
+
+            if (request.responseCode == Forbidden)
+            {
+                return new ReleaseCheckResult(false, false, RateLimit, new List<ReleaseInfo>());
             }
 
             if (request.result != UnityWebRequest.Result.Success)

@@ -8,10 +8,10 @@ namespace JTLStudio.SDK.Editor.Updates
 {
     public class ModuleCatalog
     {
-        public const string CatalogUrl = "https://api.github.com/repos/meepifiev/com.jtlstudio.sdk/contents/modules.json?ref=main";
+        public const string CatalogUrl = "https://raw.githubusercontent.com/meepifiev/com.jtlstudio.sdk/main/modules.json";
+        public const string LocalPath = "Packages/com.jtlstudio.sdk/modules.json";
 
         private const string UserAgent = "JTLSDK-Toolkit";
-        private const string RawContent = "application/vnd.github.raw";
 
         private readonly JsonParser _parser = new JsonParser();
 
@@ -24,7 +24,6 @@ namespace JTLStudio.SDK.Editor.Updates
 
             UnityWebRequest request = UnityWebRequest.Get(CatalogUrl);
             request.SetRequestHeader("User-Agent", UserAgent);
-            request.SetRequestHeader("Accept", RawContent);
             UnityWebRequestAsyncOperation operation = request.SendWebRequest();
 
             void Poll()
@@ -37,12 +36,23 @@ namespace JTLStudio.SDK.Editor.Updates
                 EditorApplication.update -= Poll;
                 ModuleCatalogResult result = request.result == UnityWebRequest.Result.Success
                     ? Parse(request.downloadHandler.text)
-                    : new ModuleCatalogResult(false, request.error, new List<ModuleDefinition>());
+                    : Local(request.error);
                 request.Dispose();
                 onDone(result);
             }
 
             EditorApplication.update += Poll;
+        }
+
+        public ModuleCatalogResult Local(string error)
+        {
+            if (System.IO.File.Exists(LocalPath) == false)
+            {
+                return new ModuleCatalogResult(false, error, new List<ModuleDefinition>());
+            }
+
+            ModuleCatalogResult local = Parse(System.IO.File.ReadAllText(LocalPath));
+            return local.IsSuccess ? local : new ModuleCatalogResult(false, error, new List<ModuleDefinition>());
         }
 
         public ModuleCatalogResult Parse(string json)
