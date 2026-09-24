@@ -6,6 +6,7 @@ using JTLStudio.SDK.Editor.Toolkit.Components;
 using JTLStudio.SDK.Editor.Updates;
 using UnityEditor;
 using UnityEditor.PackageManager;
+using UnityEngine;
 using UnityEngine.UIElements;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
@@ -15,7 +16,11 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
     {
         private const string PackageGitUrl = "https://github.com/meepifiev/com.jtlstudio.sdk.git#";
 
+        private const string LogoPath = "Packages/com.jtlstudio.sdk/Editor/Toolkit/Icons/Brand/jtlsdk-template-logo.png";
+        private const int LogoSize = 34;
+
         private readonly ModuleCatalog _catalog = new ModuleCatalog();
+        private readonly ModuleUpdates _moduleUpdates = new ModuleUpdates();
         private readonly TemplateService _template = new TemplateService();
         private ModuleCatalogResult _modules;
         private bool _checkingModules;
@@ -158,7 +163,7 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
         private VisualElement CreateModuleRow(ModuleDefinition module)
         {
             VisualElement row = Row(10);
-            row.Add(new Icon("package", 20, "secondary"));
+            row.Add(Logo(module));
             VisualElement text = Column(2);
             text.Add(TextLabel(module.Name, "jtl-text"));
             PackageInfo installed = PackageInfo.FindForAssetPath("Packages/" + module.Package);
@@ -189,6 +194,15 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
             if (installed != null)
             {
                 bool embedded = installed.source == PackageSource.Embedded || installed.source == PackageSource.Local;
+                string latest = _moduleUpdates.Latest(module.Repository);
+
+                if (embedded == false && _moduleUpdates.HasUpdate(module.Repository, installed.version))
+                {
+                    ToolkitButton update = new ToolkitButton { Label = Context.Text("package.updateToFormat", latest), Variant = ToolkitButton.SecondaryVariant };
+                    update.clicked += () => UpdateModule(module, latest);
+                    row.Add(update);
+                }
+
                 ToolkitButton remove = new ToolkitButton { Label = Context.Text("package.remove"), Variant = ToolkitButton.GhostVariant };
                 remove.SetEnabled(embedded == false);
                 remove.clicked += () => RemoveModule(module);
@@ -242,6 +256,8 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
         private void CheckModules()
         {
             _checkingModules = true;
+            _moduleUpdates.Changed -= Render;
+            _moduleUpdates.Changed += Render;
             _catalog.Fetch(result =>
             {
                 _modules = result;
@@ -256,6 +272,48 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
             {
                 Render();
             }
+        }
+
+        private VisualElement Logo(ModuleDefinition module)
+        {
+            VisualElement logo = new VisualElement();
+            logo.style.width = LogoSize;
+            logo.style.height = LogoSize;
+            logo.style.flexShrink = 0;
+            Texture2D texture = ModuleLogo(module);
+
+            if (texture != null)
+            {
+                logo.style.backgroundImage = texture;
+                SetScaleMode(logo);
+                return logo;
+            }
+
+            logo.Add(new Icon("package", 20, "secondary"));
+            return logo;
+        }
+
+        private Texture2D ModuleLogo(ModuleDefinition module)
+        {
+            Texture2D own = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/" + module.Package + "/Editor/Logo.png");
+            return own != null ? own : AssetDatabase.LoadAssetAtPath<Texture2D>(LogoPath);
+        }
+
+        private void SetScaleMode(VisualElement element)
+        {
+#if UNITY_2022_1_OR_NEWER
+            element.style.backgroundPositionX = new BackgroundPosition(BackgroundPositionKeyword.Center);
+            element.style.backgroundPositionY = new BackgroundPosition(BackgroundPositionKeyword.Center);
+            element.style.backgroundSize = new BackgroundSize(BackgroundSizeType.Contain);
+#else
+            element.style.unityBackgroundScaleMode = ScaleMode.ScaleToFit;
+#endif
+        }
+
+        private void UpdateModule(ModuleDefinition module, string version)
+        {
+            Client.Add(_catalog.GitUrl(module, "v" + version));
+            Context.Report(StatusKind.Info, "package.installing", module.Name);
         }
 
         private void InstallModule(ModuleDefinition module)

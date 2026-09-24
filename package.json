@@ -1,7 +1,7 @@
 {
   "name": "com.jtlstudio.sdk",
   "displayName": "JTL SDK",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "unity": "2021.3",
   "unityRelease": "18f1",
   "description": "Platform-independent SDK for WebGL game portals: ads, purchases, cloud saves, language, pause, leaderboards.",
