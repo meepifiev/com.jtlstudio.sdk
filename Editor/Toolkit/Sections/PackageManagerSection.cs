@@ -94,7 +94,7 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
         {
             Card card = new Card { Spacing = 8 };
             VisualElement row = Row(10);
-            row.Add(new Icon("template", 20, "secondary"));
+            row.Add(Logo(AssetDatabase.LoadAssetAtPath<Texture2D>(LogoPath), "template"));
             VisualElement text = Column(2);
             text.Add(TextLabel(Context.Text("package.webglTemplate"), "jtl-text"));
             bool installed = _template.IsInstalled;
@@ -276,11 +276,15 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
 
         private VisualElement Logo(ModuleDefinition module)
         {
+            return Logo(ModuleLogo(module), "package");
+        }
+
+        private VisualElement Logo(Texture2D texture, string fallbackIcon)
+        {
             VisualElement logo = new VisualElement();
             logo.style.width = LogoSize;
             logo.style.height = LogoSize;
             logo.style.flexShrink = 0;
-            Texture2D texture = ModuleLogo(module);
 
             if (texture != null)
             {
@@ -289,7 +293,7 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
                 return logo;
             }
 
-            logo.Add(new Icon("package", 20, "secondary"));
+            logo.Add(new Icon(fallbackIcon, 20, "secondary"));
             return logo;
         }
 

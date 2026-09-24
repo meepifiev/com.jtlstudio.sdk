@@ -8,6 +8,15 @@
       "path": "",
       "requires": "1.0.0",
       "platforms": []
+    },
+    {
+      "id": "capture",
+      "name": "Capture",
+      "package": "com.jtlstudio.sdk.capture",
+      "repository": "meepifiev/com.jtlstudio.sdk.capture",
+      "path": "",
+      "requires": "1.0.0",
+      "platforms": []
     }
   ]
 }
