@@ -55,6 +55,16 @@ namespace JTLStudio.SDK.Tests.Toolkit
         }
 
         [Test]
+        public void AnalyticsCardKeysAreLocalized()
+        {
+            ToolkitLocalization localization = new ToolkitLocalization();
+
+            Assert.IsTrue(localization.Contains("details.analytics"));
+            Assert.IsTrue(localization.Contains("details.metricaCounter"));
+            Assert.IsTrue(localization.Contains("details.metricaCounterHint"));
+        }
+
+        [Test]
         public void SidebarContainsEveryNavigationItem()
         {
             Assert.AreEqual(NavigationItemCount, _window.NavigationItems.Count);

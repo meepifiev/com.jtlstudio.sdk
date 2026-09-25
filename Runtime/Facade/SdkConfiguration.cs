@@ -11,6 +11,7 @@ namespace JTLStudio.SDK
         [SerializeField] private PlatformId _platform = PlatformId.Editor;
         [SerializeField] private string _defineSymbol = "";
         [SerializeField] private bool _pauseOnFocusLoss = true;
+        [SerializeField] private string _yandexMetricaCounter = "";
         [SerializeField] private List<Language> _languages = new List<Language> { Language.English };
         [SerializeField] private PlayerSettingsPreset _playerSettings = new PlayerSettingsPreset();
         [SerializeReference] private IPlatformProvider _platformProvider;
@@ -49,6 +50,12 @@ namespace JTLStudio.SDK
         {
             get => _pauseOnFocusLoss;
             internal set => _pauseOnFocusLoss = value;
+        }
+
+        public string YandexMetricaCounter
+        {
+            get => _yandexMetricaCounter;
+            internal set => _yandexMetricaCounter = value ?? "";
         }
 
         public List<Language> Languages => _languages;

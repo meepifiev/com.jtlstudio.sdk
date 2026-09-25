@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using JTLStudio.SDK.Editor.Configuration;
 using JTLStudio.SDK.Editor.Updates;
 using JTLStudio.SDK.Providers;
@@ -58,6 +59,22 @@ namespace JTLStudio.SDK.Tests.Build
         public void EmptyFeedHasNoVersion()
         {
             Assert.AreEqual("", new ModuleUpdates().Highest("<feed><title>Tags</title></feed>"));
+        }
+
+        [Test]
+        public void ShippedCatalogListsEveryModule()
+        {
+            ModuleCatalogResult result = _catalog.Local("");
+            List<string> packages = new List<string>();
+
+            foreach (ModuleDefinition module in result.Modules)
+            {
+                packages.Add(module.Package);
+            }
+
+            CollectionAssert.Contains(packages, "com.jtlstudio.sdk.localization");
+            CollectionAssert.Contains(packages, "com.jtlstudio.sdk.capture");
+            CollectionAssert.Contains(packages, "com.jtlstudio.sdk.analytics");
         }
 
         [Test]

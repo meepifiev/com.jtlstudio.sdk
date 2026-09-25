@@ -260,6 +260,9 @@ namespace JTLStudio.SDK.Editor.Toolkit.Localization
             Add("details.noSettings", "No settings", "Без настроек");
             Add("details.pause", "Pause", "Пауза");
             Add("details.pauseOnFocusLoss", "Pause on focus loss", "Пауза при потере фокуса");
+            Add("details.analytics", "Analytics", "Аналитика");
+            Add("details.metricaCounter", "Yandex Metrica counter", "Счётчик Яндекс Метрики");
+            Add("details.metricaCounterHint", "The Analytics module sends goals to this counter. Empty means goals are not sent.", "Модуль Analytics шлёт цели в этот счётчик. Пусто - цели не отправляются.");
             Add("details.languages", "Languages on this configuration", "Языки этой конфигурации");
             Add("details.languagesDescription", "Only languages enabled in the project are listed.", "В списке только языки, включённые в проекте.");
             Add("details.noProjectLanguages", "Enable languages in the Languages section first.", "Сначала включи языки в разделе «Языки».");

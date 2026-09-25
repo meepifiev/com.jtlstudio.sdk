@@ -17,6 +17,15 @@
       "path": "",
       "requires": "1.0.0",
       "platforms": []
+    },
+    {
+      "id": "analytics",
+      "name": "Analytics",
+      "package": "com.jtlstudio.sdk.analytics",
+      "repository": "meepifiev/com.jtlstudio.sdk.analytics",
+      "path": "",
+      "requires": "1.2.0",
+      "platforms": []
     }
   ]
 }

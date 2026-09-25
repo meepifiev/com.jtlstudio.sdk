@@ -54,6 +54,7 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
             root.Add(CreatePresetCard());
             root.Add(CreateModulesCard());
             root.Add(CreatePauseCard());
+            root.Add(CreateAnalyticsCard());
             root.Add(CreateLanguagesCard());
         }
 
@@ -163,6 +164,48 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
             focus.Add(SwitchControl(_serialized.FindProperty("_pauseOnFocusLoss")));
             card.Add(focus);
             return card;
+        }
+
+        private VisualElement CreateAnalyticsCard()
+        {
+            Card card = new Card { TitleKey = "details.analytics" };
+            FieldRow counter = new FieldRow("details.metricaCounter", FieldRow.DefaultLabelWidth);
+            counter.Add(CounterControl(_serialized.FindProperty("_yandexMetricaCounter")));
+            card.Add(counter);
+            LocalizedLabel hint = new LocalizedLabel("details.metricaCounterHint");
+            hint.AddToClassList("jtl-text--caption");
+            card.Add(hint);
+            return card;
+        }
+
+        private VisualElement CounterControl(SerializedProperty property)
+        {
+            TextField field = new TextField { value = property.stringValue };
+            field.AddToClassList("jtl-field");
+            field.AddToClassList(MonospaceFont.ClassName);
+            field.style.width = ValueWidth;
+            field.RegisterCallback<FocusOutEvent>(_ => ApplyCounter(property, field.value));
+            field.RegisterCallback<KeyDownEvent>(keyEvent =>
+            {
+                if (keyEvent.keyCode == KeyCode.Return || keyEvent.keyCode == KeyCode.KeypadEnter)
+                {
+                    ApplyCounter(property, field.value);
+                }
+            });
+            return field;
+        }
+
+        private void ApplyCounter(SerializedProperty property, string value)
+        {
+            string counter = value == null ? "" : value.Trim();
+
+            if (property.stringValue == counter)
+            {
+                return;
+            }
+
+            property.stringValue = counter;
+            ApplySerialized(false);
         }
 
         private VisualElement CreateLanguagesCard()
