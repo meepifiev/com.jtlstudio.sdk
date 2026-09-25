@@ -262,6 +262,10 @@ pre code{color:#D6E0F2}
     <a href="#device">Устройство</a>
     <a href="#review-label">Отзыв и ярлык</a>
     <a href="#links">Ссылки</a>
+    <h5>Отдельные пакеты</h5>
+    <a href="#localization-package">Локализация текстов</a>
+    <a href="#capture-package">Скриншоты и ролики</a>
+    <a href="#analytics-package">Аналитика</a>
     <h5>Справка</h5>
     <a href="#platforms">Возможности площадок</a>
     <a href="#ai">Для ИИ</a>
@@ -644,6 +648,97 @@ AudioListener.volume = (системная пауза со звуком || зв�
         <tr><td class="api">OpenGamePage(gameId)</td><td><code>https://yandex.&lt;домен&gt;/games/app/&lt;gameId&gt;</code>. Пустой id бросает <code>ArgumentException</code>.</td></tr>
       </table></div>
       <p>В редакторе домен равен <code>ru</code>, а ссылка открывается в системном браузере через <code>Application.OpenURL</code> и печатается в консоль. Поддержка проверяется как у остальных модулей: <code>JTLSDK.Platform.Supports(Capability.Links)</code>.</p>
+    </section>
+
+    <section id="localization-package" data-keywords="локализация текстов перевод таблица ключи csv шрифты textmeshpro пакет модуль localization">
+      <h2>Локализация текстов</h2>
+      <p class="lead">Отдельный пакет <code>com.jtlstudio.sdk.localization</code>. Переводы статичных текстов лежат в таблице с ключами, а не в самих компонентах.</p>
+      <p>Ставится из окна SDK, раздел Package Manager, кнопкой Install, либо по git-ссылке <code>https://github.com/meepifiev/com.jtlstudio.sdk.localization.git</code>. Языки проекта, язык по умолчанию и язык старта берутся из настроек SDK, отдельного списка языков у пакета нет.</p>
+      <h3>Из чего состоит</h3>
+      <div class="tablewrap"><table>
+        <tr><th>Что</th><th>Зачем</th></tr>
+        <tr><td class="api">LocalizationTable</td><td>Ассет с ключами: на каждый ключ строка для каждого языка проекта. Таблиц может быть несколько, например по экранам.</td></tr>
+        <tr><td class="api">Localized Text</td><td>Компонент на объект с <code>TMP_Text</code>: поля Table, Key, Translate text, Apply font, Font slot. Подставляет перевод при включении и при каждой смене языка. С обычным <code>UnityEngine.UI.Text</code> не работает.</td></tr>
+        <tr><td class="api">LocalizationFonts</td><td>Ассет со слотами шрифтов: на слот и язык задаётся шрифт и поправка размера (<code>Size delta</code>), потому что кириллица и иероглифы редко живут в одном шрифте.</td></tr>
+        <tr><td class="api">JTLSDKLocalization</td><td>Ассет настроек в <code>Resources/JTLSDK</code>: список таблиц, ссылка на шрифты и поведение при отсутствии перевода.</td></tr>
+      </table></div>
+      <h3>Какой перевод подставляется</h3>
+      <p>Язык берётся из <code>JTLSDK.Language.Current</code>: служебный объект пакета следит за SDK и переносит язык в <code>Localization</code>. Пока SDK не создан, язык равен Default language из настроек SDK, поэтому сцена без запущенного SDK показывает тексты языка по умолчанию, а не ключи.</p>
+      <p>Поиск идёт по порядку: таблица, указанная в компоненте; остальные таблицы из настроек; тот же круг на языке по умолчанию. Если перевода нет нигде, поведение задаётся полем Missing translation: <code>ShowKey</code> покажет сам ключ, <code>ShowEmpty</code> пустую строку, <code>ShowMarker</code> ключ в решётках.</p>
+      <div class="codebox solo"><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">using JTLStudio.SDK.Localization;
+
+string title = Localization.Translate("menu.play");
+bool found = Localization.TryTranslate("menu.play", out string text);
+
+Localization.Changed += Redraw;   // язык сменился, перерисовать своё</code></pre></div>
+      <h3>Окно JTL SDK › Localization</h3>
+      <p>Вкладка <b>Table</b>: правка ключей и переводов, поиск сразу по ключу и по всем переводам ключа, Export CSV и Import CSV, кнопка Translate empty. Перевод заполняет только пустые строки, существующие не трогает, идёт пачками по 40 и отменяется. С ключом Cloud Translation API запросы уходят в него, без ключа в бесплатную точку Google; ключ хранится в EditorPrefs и в проект не попадает.</p>
+      <p>Вкладка <b>Scene</b>: проход по открытым сценам собирает все <code>TextMeshPro</code> и предлагает ключи. Пока не нажата кнопка, ничего не меняется: по нажатию ключи добавляются в выбранную таблицу, текущий текст кладётся в язык по умолчанию, а на объект вешается Localized Text.</p>
+      <p>Вкладка <b>Settings</b>: таблицы, шрифты и поведение при отсутствии перевода. У самого компонента есть кнопка, которая открывает окно на его ключе и подсвечивает строку.</p>
+    </section>
+
+    <section id="capture-package" data-keywords="скриншоты ролики видео запись recorder съёмка магазин обложки capture пакет модуль">
+      <h2>Скриншоты и ролики</h2>
+      <p class="lead">Отдельный пакет <code>com.jtlstudio.sdk.capture</code>. Снимает кадры и видео сразу на всех языках активной конфигурации, за один заход и с одного момента игры.</p>
+      <p>Ставится из окна SDK, раздел Package Manager, либо по git-ссылке <code>https://github.com/meepifiev/com.jtlstudio.sdk.capture.git</code>. Пакет целиком editor-only: в сборку игры не попадает ничего.</p>
+      <h3>Как снимать</h3>
+      <p>Окно <code>JTL SDK › Capture</code>. В блоке Capture галками выбирается, что снимать: Screenshots, Video или то и другое. Кнопка Start запускает съёмку и, если вы не в Play Mode, сама входит в него; та же кнопка становится Stop. Горячая клавиша из блока Scene делает то же самое.</p>
+      <p>Скриншот снимается по одному кадру на язык: время останавливается (<code>Time.timeScale = 0</code>), поэтому все языки показывают один и тот же момент. Серию изображений покадрово пакет не пишет.</p>
+      <p>Видео пишется встроенным <code>MediaEncoder</code> в MP4 (H.264) по файлу на язык, со звуком, если включено Record audio. Чтобы ролики совпадали покадрово, <code>Time.captureDeltaTime</code> делится на число языков. Режим Manual пишет, пока не нажмёшь Stop, режим Duration заданное число секунд. Галка Exit Play Mode after выводит редактор из Play Mode, когда файлы записаны.</p>
+      <h3>Что настраивается</h3>
+      <div class="tablewrap"><table>
+        <tr><th>Поле</th><th>Что делает</th></tr>
+        <tr><td class="api">Capture from</td><td>Game View вместе с интерфейсом или рендер конкретной камеры сцены. У камеры есть Include overlay UI: на время кадра Screen Space Overlay канвасы переводятся на неё и возвращаются обратно, поэтому интерфейс попадает и в съёмку с камеры.</td></tr>
+        <tr><td class="api">Frame size</td><td>Разрешение из списка или Custom со своими шириной и высотой. Game View переключается в этот размер, то есть соотношение сторон настоящее, а не растянутое. Если подменить разрешение не вышло, кадр обрезается по центру, о чём говорит статус.</td></tr>
+        <tr><td class="api">Languages</td><td>Все языки активной конфигурации или отмеченные вручную.</td></tr>
+        <tr><td class="api">Output</td><td>Папка, кнопка Browse для выбора и Open, чтобы открыть её. Имена файлов вида <code>game_1080x1920_ru_0924_1230.png</code>. Сама папка после съёмки не открывается.</td></tr>
+        <tr><td class="api">Scene</td><td>Слои, которые скрыть на время съёмки, и объекты по имени, например отладочный интерфейс.</td></tr>
+      </table></div>
+      <div class="note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E0A83C" stroke-width="2" stroke-linecap="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><span>Язык переключается через SDK. Если в сцене нет <code>JTLSDK.Create()</code>, а языков выбрано больше одного, съёмка не стартует и пишет причину: иначе получились бы одинаковые файлы с разными языками в имени. Свой способ переключения задаётся через <code>CaptureLanguages.Switch</code>.</span></div>
+    </section>
+
+    <section id="analytics-package" data-keywords="аналитика цели события яндекс метрика reachgoal счётчик analytics пакет модуль">
+      <h2>Аналитика</h2>
+      <p class="lead">Отдельный пакет <code>com.jtlstudio.sdk.analytics</code>. Произвольные события игры уходят целями в Яндекс Метрику.</p>
+      <p>Ставится из окна SDK, раздел Package Manager, либо по git-ссылке <code>https://github.com/meepifiev/com.jtlstudio.sdk.analytics.git</code>. Требует JTL SDK 1.2.0 или новее.</p>
+      <h3>Счётчик</h3>
+      <p>Номер счётчика вводится в окне SDK: раздел Configurations, открыть конфигурацию, карточка Analytics, поле Yandex Metrica counter. Он лежит в конфигурации, потому что для разных площадок и сборок счётчик разный. Скрипт Метрики поднимается сам при старте игры, класть что-либо в сцену не нужно. Пустое поле означает, что цели не отправляются: об этом один раз пишется предупреждение в консоль.</p>
+      <h3>Как слать события</h3>
+      <div class="tablewrap"><table>
+        <tr><th>API</th><th>Что делает</th></tr>
+        <tr><td class="api">Analytics.Send(name)</td><td>Цель без параметров: <code>ym(counter, "reachGoal", name)</code>.</td></tr>
+        <tr><td class="api">Analytics.Send(name, data)</td><td>Цель с параметрами: словарь уходит в Метрику объектом, значения строками.</td></tr>
+        <tr><td class="api">Analytics.Send(analyticsEvent)</td><td>Событие-объект: у него вызывается <code>Report(reporter)</code>, и уже он решает, что отправить.</td></tr>
+        <tr><td class="api">Analytics.Reporter</td><td>Подменяется своим <code>IAnalyticsReporter</code>, например в тестах, чтобы проверить события без сети.</td></tr>
+        <tr><td class="api">Analytics.IsReady</td><td>true, если счётчик задан и Метрика инициализирована.</td></tr>
+      </table></div>
+      <p>Имя цели и её параметры удобно держать внутри класса события, а не разбрасывать строками по коду:</p>
+      <div class="codebox solo"><button class="copy" type="button">Копировать</button><pre><code class="language-csharp">using System.Collections.Generic;
+using JTLStudio.SDK.Analytics;
+
+public class LevelCompletedEvent : IAnalyticsEvent
+{
+    private readonly int _level;
+
+    public LevelCompletedEvent(int level)
+    {
+        _level = level;
+    }
+
+    public void Report(IAnalyticsReporter reporter)
+    {
+        reporter.Send("level_complete", new Dictionary&lt;string, string&gt;
+        {
+            ["level"] = _level.ToString()
+        });
+    }
+}
+
+// в игре
+Analytics.Send(new LevelCompletedEvent(7));
+Analytics.Send("shop_opened");</code></pre></div>
+      <p>Вне web-сборки цели никуда не уходят, а пишутся в консоль с префиксом <code>[JTL SDK Analytics]</code>, если уровень логов SDK равен «Всё». Так видно и имя цели, и её параметры.</p>
+      <div class="note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E0A83C" stroke-width="2" stroke-linecap="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><span>Состояние геймплея этот пакет не трогает. <code>GameReady</code>, старт и остановку геймплея площадка ждёт от <code>JTLSDK.GameEvents</code>, и они нужны даже без аналитики.</span></div>
     </section>
 
     <section id="platforms" data-keywords="возможности площадок яндекс youtube поддержка сравнение">
