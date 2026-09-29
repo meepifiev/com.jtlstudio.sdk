@@ -133,11 +133,12 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
                 table.Add(message);
             }
 
-            table.Add(SettingRow("Decompression Fallback", SwitchControl(preset.FindPropertyRelative("_decompressionFallback")), preset.FindPropertyRelative("_applyDecompressionFallback")));
+            table.Add(SettingRow("Name Files As Hashes", SwitchControl(preset.FindPropertyRelative("_nameFilesAsHashes")), preset.FindPropertyRelative("_applyNameFilesAsHashes")));
             table.Add(SettingRow("Data Caching", SwitchControl(preset.FindPropertyRelative("_dataCaching")), preset.FindPropertyRelative("_applyDataCaching")));
+            table.Add(SettingRow("Debug Symbols", EnumControl<DebugSymbolMode>(preset.FindPropertyRelative("_debugSymbols"), false), preset.FindPropertyRelative("_applyDebugSymbols")));
+            table.Add(SettingRow("Decompression Fallback", SwitchControl(preset.FindPropertyRelative("_decompressionFallback")), preset.FindPropertyRelative("_applyDecompressionFallback")));
             table.Add(SettingRow("Managed Stripping Level", EnumControl<StrippingLevel>(preset.FindPropertyRelative("_stripping"), false), preset.FindPropertyRelative("_applyStripping")));
             table.Add(SettingRow("Run In Background", SwitchControl(preset.FindPropertyRelative("_runInBackground")), preset.FindPropertyRelative("_applyRunInBackground")));
-            table.Add(SettingRow("Debug Symbols", SwitchControl(preset.FindPropertyRelative("_debugSymbols")), preset.FindPropertyRelative("_applyDebugSymbols")));
             table.Add(SettingRow("Memory Size", MemoryControl(preset.FindPropertyRelative("_memorySizeMegabytes")), preset.FindPropertyRelative("_applyMemorySize")));
             card.Add(table);
             return card;

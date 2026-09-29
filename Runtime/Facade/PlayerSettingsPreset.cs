@@ -16,6 +16,8 @@ namespace JTLStudio.SDK
         [SerializeField] private WebCompression _compression = WebCompression.Brotli;
         [SerializeField] private bool _applyDecompressionFallback = true;
         [SerializeField] private bool _decompressionFallback;
+        [SerializeField] private bool _applyNameFilesAsHashes;
+        [SerializeField] private bool _nameFilesAsHashes;
         [SerializeField] private bool _applyDataCaching = true;
         [SerializeField] private bool _dataCaching = true;
         [SerializeField] private bool _applyStripping = true;
@@ -23,7 +25,7 @@ namespace JTLStudio.SDK
         [SerializeField] private bool _applyRunInBackground = true;
         [SerializeField] private bool _runInBackground = true;
         [SerializeField] private bool _applyDebugSymbols = true;
-        [SerializeField] private bool _debugSymbols;
+        [SerializeField] private DebugSymbolMode _debugSymbols = DebugSymbolMode.Off;
         [SerializeField] private bool _applyMemorySize;
         [SerializeField] private int _memorySizeMegabytes = 512;
 
@@ -35,6 +37,8 @@ namespace JTLStudio.SDK
         public WebCompression Compression { get => _compression; set => _compression = value; }
         public bool ApplyDecompressionFallback { get => _applyDecompressionFallback; set => _applyDecompressionFallback = value; }
         public bool DecompressionFallback { get => _decompressionFallback; set => _decompressionFallback = value; }
+        public bool ApplyNameFilesAsHashes { get => _applyNameFilesAsHashes; set => _applyNameFilesAsHashes = value; }
+        public bool NameFilesAsHashes { get => _nameFilesAsHashes; set => _nameFilesAsHashes = value; }
         public bool ApplyDataCaching { get => _applyDataCaching; set => _applyDataCaching = value; }
         public bool DataCaching { get => _dataCaching; set => _dataCaching = value; }
         public bool ApplyStripping { get => _applyStripping; set => _applyStripping = value; }
@@ -42,7 +46,7 @@ namespace JTLStudio.SDK
         public bool ApplyRunInBackground { get => _applyRunInBackground; set => _applyRunInBackground = value; }
         public bool RunInBackground { get => _runInBackground; set => _runInBackground = value; }
         public bool ApplyDebugSymbols { get => _applyDebugSymbols; set => _applyDebugSymbols = value; }
-        public bool DebugSymbols { get => _debugSymbols; set => _debugSymbols = value; }
+        public DebugSymbolMode DebugSymbols { get => _debugSymbols; set => _debugSymbols = value; }
         public bool ApplyMemorySize { get => _applyMemorySize; set => _applyMemorySize = value; }
         public int MemorySizeMegabytes { get => _memorySizeMegabytes; set => _memorySizeMegabytes = Mathf.Max(32, value); }
     }

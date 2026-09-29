@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0] - 2026-09-29
+
+### Changed
+
+- Порядок строк в карточке Project settings повторяет блок WebGL Settings в Player Settings: Enable Exceptions, Compression Format, Name Files As Hashes, Data Caching, Debug Symbols, Decompression Fallback, дальше идут Managed Stripping Level, Run In Background и Memory Size.
+- Debug Symbols стал выпадающим списком Off, External, Embedded вместо галки. Галка умела только Off и External, а Embedded выбрать было нельзя. `PlayerSettingsPreset.DebugSymbols` теперь `DebugSymbolMode`, а не `bool`; в конфигурациях старое значение переезжает само, потому что выключено это Off, а включено External.
+- В разделе Build список Debug Symbols переехал в блок Runtime к Managed Stripping и Enable Exceptions.
+
+### Added
+
+- В пресет добавлена строка Name Files As Hashes. Раньше эта галка в разделе Build писала прямо в Player Settings мимо конфигурации, теперь она часть пресета, как соседние поля. Галка Apply у неё по умолчанию снята, поэтому обновление ничего не перезапишет.
+
 ## [1.3.0] - 2026-09-29
 
 ### Added

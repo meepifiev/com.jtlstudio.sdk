@@ -50,6 +50,46 @@ namespace JTLStudio.SDK.Tests.Build
         }
 
         [Test]
+        public void EveryDebugSymbolValueMapsBothWays()
+        {
+            foreach (DebugSymbolMode value in Enum.GetValues(typeof(DebugSymbolMode)))
+            {
+                Assert.AreEqual(value, _service.FromUnity(_service.ToUnity(value)), value.ToString());
+            }
+        }
+
+        [Test]
+        public void EveryUnityDebugSymbolValueIsCovered()
+        {
+            foreach (WebGLDebugSymbolMode value in Enum.GetValues(typeof(WebGLDebugSymbolMode)))
+            {
+                Assert.DoesNotThrow(() => _service.FromUnity(value), value.ToString());
+            }
+        }
+
+        [Test]
+        public void OldDebugSymbolsCheckboxKeepsItsMeaning()
+        {
+            Assert.AreEqual(0, (int)DebugSymbolMode.Off);
+            Assert.AreEqual(1, (int)DebugSymbolMode.External);
+        }
+
+        [Test]
+        public void CurrentDebugSymbolsReadsTheProject()
+        {
+            Assert.AreEqual(_service.FromUnity(PlayerSettings.WebGL.debugSymbolMode), _service.CurrentDebugSymbols());
+        }
+
+        [Test]
+        public void FileHashingIsNotAppliedUntilTheBoxIsTicked()
+        {
+            PlayerSettingsPreset preset = new PlayerSettingsPreset();
+
+            Assert.IsFalse(preset.ApplyNameFilesAsHashes);
+            Assert.IsFalse(preset.NameFilesAsHashes);
+        }
+
+        [Test]
         public void CurrentExceptionsReadsTheProject()
         {
             Assert.AreEqual(_service.FromUnity(PlayerSettings.WebGL.exceptionSupport), _service.CurrentExceptions());

@@ -35,6 +35,11 @@ namespace JTLStudio.SDK.Editor.Configuration
                 PlayerSettings.WebGL.decompressionFallback = preset.DecompressionFallback;
             }
 
+            if (preset.ApplyNameFilesAsHashes)
+            {
+                PlayerSettings.WebGL.nameFilesAsHashes = preset.NameFilesAsHashes;
+            }
+
             if (preset.ApplyDataCaching)
             {
                 PlayerSettings.WebGL.dataCaching = preset.DataCaching;
@@ -52,7 +57,7 @@ namespace JTLStudio.SDK.Editor.Configuration
 
             if (preset.ApplyDebugSymbols)
             {
-                PlayerSettings.WebGL.debugSymbolMode = preset.DebugSymbols ? WebGLDebugSymbolMode.External : WebGLDebugSymbolMode.Off;
+                PlayerSettings.WebGL.debugSymbolMode = ToUnity(preset.DebugSymbols);
             }
 
             if (preset.ApplyMemorySize)
@@ -122,6 +127,47 @@ namespace JTLStudio.SDK.Editor.Configuration
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(exceptions));
+            }
+        }
+
+        public DebugSymbolMode CurrentDebugSymbols()
+        {
+            return FromUnity(PlayerSettings.WebGL.debugSymbolMode);
+        }
+
+        public DebugSymbolMode FromUnity(WebGLDebugSymbolMode symbols)
+        {
+            switch (symbols)
+            {
+                case WebGLDebugSymbolMode.Off:
+                    return DebugSymbolMode.Off;
+
+                case WebGLDebugSymbolMode.External:
+                    return DebugSymbolMode.External;
+
+                case WebGLDebugSymbolMode.Embedded:
+                    return DebugSymbolMode.Embedded;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(symbols));
+            }
+        }
+
+        public WebGLDebugSymbolMode ToUnity(DebugSymbolMode symbols)
+        {
+            switch (symbols)
+            {
+                case DebugSymbolMode.Off:
+                    return WebGLDebugSymbolMode.Off;
+
+                case DebugSymbolMode.External:
+                    return WebGLDebugSymbolMode.External;
+
+                case DebugSymbolMode.Embedded:
+                    return WebGLDebugSymbolMode.Embedded;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(symbols));
             }
         }
 

@@ -379,20 +379,15 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
 
             VisualElement checks = new VisualElement();
             checks.AddToClassList("jtl-column");
-            checks.Add(CheckLine("Name Files As Hashes", PlayerSettings.WebGL.nameFilesAsHashes, value =>
+            checks.Add(CheckLine("Name Files As Hashes", preset.ApplyNameFilesAsHashes ? preset.NameFilesAsHashes : PlayerSettings.WebGL.nameFilesAsHashes, value => ChangePreset(active, () =>
             {
-                PlayerSettings.WebGL.nameFilesAsHashes = value;
-                AssetDatabase.SaveAssets();
-            }));
+                preset.NameFilesAsHashes = value;
+                preset.ApplyNameFilesAsHashes = true;
+            })));
             checks.Add(CheckLine("Data Caching", preset.ApplyDataCaching ? preset.DataCaching : PlayerSettings.WebGL.dataCaching, value => ChangePreset(active, () =>
             {
                 preset.DataCaching = value;
                 preset.ApplyDataCaching = true;
-            })));
-            checks.Add(CheckLine("Debug Symbols", preset.ApplyDebugSymbols ? preset.DebugSymbols : PlayerSettings.WebGL.debugSymbolMode != WebGLDebugSymbolMode.Off, value => ChangePreset(active, () =>
-            {
-                preset.DebugSymbols = value;
-                preset.ApplyDebugSymbols = true;
             })));
             checks.Add(CheckLine("Decompression Fallback", preset.ApplyDecompressionFallback ? preset.DecompressionFallback : PlayerSettings.WebGL.decompressionFallback, value => ChangePreset(active, () =>
             {
@@ -506,6 +501,12 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
             {
                 preset.Exceptions = value;
                 preset.ApplyExceptions = true;
+            }))));
+            DebugSymbolMode symbols = preset.ApplyDebugSymbols ? preset.DebugSymbols : _presets.CurrentDebugSymbols();
+            runtime.Add(AsideField("build.debugSymbols", EnumDropdown(symbols, false, value => ChangePreset(active, () =>
+            {
+                preset.DebugSymbols = value;
+                preset.ApplyDebugSymbols = true;
             }))));
             aside.Add(runtime);
 
