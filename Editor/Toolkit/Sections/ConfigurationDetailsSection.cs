@@ -123,6 +123,7 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
             head.Add(Heading("details.columnApply", "jtl-setting-head__apply"));
             table.Add(head);
 
+            table.Add(SettingRow("Enable Exceptions", EnumControl<ExceptionSupport>(preset.FindPropertyRelative("_exceptions"), false), preset.FindPropertyRelative("_applyExceptions")));
             table.Add(SettingRow("Compression Format", EnumControl<WebCompression>(preset.FindPropertyRelative("_compression"), IsCompressionInvalid()), preset.FindPropertyRelative("_applyCompression")));
 
             foreach (string issue in _validator.Validate(_configuration))

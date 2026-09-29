@@ -20,6 +20,11 @@ namespace JTLStudio.SDK.Editor.Configuration
                 PlayerSettings.WebGL.template = preset.Template;
             }
 
+            if (preset.ApplyExceptions)
+            {
+                PlayerSettings.WebGL.exceptionSupport = ToUnity(preset.Exceptions);
+            }
+
             if (preset.ApplyCompression)
             {
                 PlayerSettings.WebGL.compressionFormat = ToUnity(preset.Compression);
@@ -70,6 +75,53 @@ namespace JTLStudio.SDK.Editor.Configuration
 
                 default:
                     return WebCompression.Disabled;
+            }
+        }
+
+        public ExceptionSupport CurrentExceptions()
+        {
+            return FromUnity(PlayerSettings.WebGL.exceptionSupport);
+        }
+
+        public ExceptionSupport FromUnity(WebGLExceptionSupport exceptions)
+        {
+            switch (exceptions)
+            {
+                case WebGLExceptionSupport.None:
+                    return ExceptionSupport.None;
+
+                case WebGLExceptionSupport.ExplicitlyThrownExceptionsOnly:
+                    return ExceptionSupport.ExplicitlyThrownExceptionsOnly;
+
+                case WebGLExceptionSupport.FullWithoutStacktrace:
+                    return ExceptionSupport.FullWithoutStacktrace;
+
+                case WebGLExceptionSupport.FullWithStacktrace:
+                    return ExceptionSupport.FullWithStacktrace;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(exceptions));
+            }
+        }
+
+        public WebGLExceptionSupport ToUnity(ExceptionSupport exceptions)
+        {
+            switch (exceptions)
+            {
+                case ExceptionSupport.None:
+                    return WebGLExceptionSupport.None;
+
+                case ExceptionSupport.ExplicitlyThrownExceptionsOnly:
+                    return WebGLExceptionSupport.ExplicitlyThrownExceptionsOnly;
+
+                case ExceptionSupport.FullWithoutStacktrace:
+                    return WebGLExceptionSupport.FullWithoutStacktrace;
+
+                case ExceptionSupport.FullWithStacktrace:
+                    return WebGLExceptionSupport.FullWithStacktrace;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(exceptions));
             }
         }
 

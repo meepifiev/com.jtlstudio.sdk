@@ -10,6 +10,8 @@ namespace JTLStudio.SDK
 
         [SerializeField] private bool _applyTemplate = true;
         [SerializeField] private string _template = DefaultTemplate;
+        [SerializeField] private bool _applyExceptions;
+        [SerializeField] private ExceptionSupport _exceptions = ExceptionSupport.ExplicitlyThrownExceptionsOnly;
         [SerializeField] private bool _applyCompression = true;
         [SerializeField] private WebCompression _compression = WebCompression.Brotli;
         [SerializeField] private bool _applyDecompressionFallback = true;
@@ -27,6 +29,8 @@ namespace JTLStudio.SDK
 
         public bool ApplyTemplate { get => _applyTemplate; set => _applyTemplate = value; }
         public string Template { get => _template; set => _template = value ?? DefaultTemplate; }
+        public bool ApplyExceptions { get => _applyExceptions; set => _applyExceptions = value; }
+        public ExceptionSupport Exceptions { get => _exceptions; set => _exceptions = value; }
         public bool ApplyCompression { get => _applyCompression; set => _applyCompression = value; }
         public WebCompression Compression { get => _compression; set => _compression = value; }
         public bool ApplyDecompressionFallback { get => _applyDecompressionFallback; set => _applyDecompressionFallback = value; }

@@ -10,6 +10,7 @@ namespace JTLStudio.SDK.Editor.Configuration
             preset.RunInBackground = true;
             preset.MemorySizeMegabytes = 512;
             preset.DebugSymbols = false;
+            preset.Exceptions = ExceptionSupport.ExplicitlyThrownExceptionsOnly;
 
             switch (platform)
             {

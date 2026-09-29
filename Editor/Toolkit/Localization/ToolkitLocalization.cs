@@ -146,6 +146,7 @@ namespace JTLStudio.SDK.Editor.Toolkit.Localization
             Add("build.version", "Version", "Version");
             Add("build.runtimeSettings", "Runtime", "Runtime");
             Add("build.stripping", "Managed Stripping", "Managed Stripping");
+            Add("build.exceptions", "Enable Exceptions", "Enable Exceptions");
             Add("build.advanced", "Advanced", "Advanced");
             Add("build.buildProject", "Build Project", "Собрать проект");
             Add("build.preChecks", "Pre-build checks", "Проверки перед сборкой");

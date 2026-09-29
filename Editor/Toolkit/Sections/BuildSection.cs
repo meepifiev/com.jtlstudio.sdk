@@ -501,6 +501,12 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
                 preset.Stripping = value;
                 preset.ApplyStripping = true;
             }))));
+            ExceptionSupport exceptions = preset.ApplyExceptions ? preset.Exceptions : _presets.CurrentExceptions();
+            runtime.Add(AsideField("build.exceptions", EnumDropdown(exceptions, false, value => ChangePreset(active, () =>
+            {
+                preset.Exceptions = value;
+                preset.ApplyExceptions = true;
+            }))));
             aside.Add(runtime);
 
             VisualElement checks = new VisualElement();

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0] - 2026-09-29
+
+### Added
+
+- В пресете конфигурации появилась строка Enable Exceptions: значения как в Unity (None, Explicitly Thrown Exceptions Only, Full Without Stacktrace, Full With Stacktrace). Стоит первой, над Compression Format, как в Publishing Settings. Тот же список продублирован в разделе Build, блок Runtime.
+- Галка Apply у этой строки по умолчанию снята, как у Memory Size: SDK не трогает `PlayerSettings.WebGL.exceptionSupport`, пока вы её не поставите, поэтому обновление не перезапишет значение в существующих проектах. У новых конфигураций в пресет кладётся Explicitly Thrown Exceptions Only.
+
 ## [1.2.0] - 2026-09-25
 
 ### Added
