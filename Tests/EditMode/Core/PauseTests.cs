@@ -3,6 +3,7 @@ using JTLStudio.SDK.Services;
 using JTLStudio.SDK.Tests.Fakes;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace JTLStudio.SDK.Tests.Core
 {
@@ -106,6 +107,61 @@ namespace JTLStudio.SDK.Tests.Core
             _builder.Platform.RequestPause(true);
 
             Assert.AreEqual(1f, Time.timeScale, 0.0001f);
+        }
+
+        [Test]
+        public void RenderingStopsWhilePaused()
+        {
+            int interval = OnDemandRendering.renderFrameInterval;
+
+            try
+            {
+                OnDemandRendering.renderFrameInterval = 2;
+                JTLSDK.Create(_builder.Build());
+
+                _builder.Platform.RequestPause(true);
+                Assert.Greater(OnDemandRendering.renderFrameInterval, 1000);
+
+                _builder.Platform.RequestPause(false);
+                Assert.AreEqual(2, OnDemandRendering.renderFrameInterval);
+            }
+            finally
+            {
+                OnDemandRendering.renderFrameInterval = interval;
+            }
+        }
+
+        [Test]
+        public void RenderingOptionOffKeepsFramesComing()
+        {
+            int interval = OnDemandRendering.renderFrameInterval;
+
+            try
+            {
+                OnDemandRendering.renderFrameInterval = 1;
+                _builder.PauseRendering = false;
+                JTLSDK.Create(_builder.Build());
+
+                _builder.Platform.RequestPause(true);
+
+                Assert.AreEqual(1, OnDemandRendering.renderFrameInterval);
+            }
+            finally
+            {
+                OnDemandRendering.renderFrameInterval = interval;
+            }
+        }
+
+        [Test]
+        public void InputBlockingSurvivesOutsideWebGl()
+        {
+            JTLSDK.Create(_builder.Build());
+
+            Assert.DoesNotThrow(() => _builder.Platform.RequestPause(true));
+            Assert.IsTrue(JTLSDK.Pause.IsPaused);
+
+            Assert.DoesNotThrow(() => _builder.Platform.RequestPause(false));
+            Assert.IsFalse(JTLSDK.Pause.IsPaused);
         }
 
         [Test]

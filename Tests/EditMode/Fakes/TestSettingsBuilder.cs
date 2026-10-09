@@ -28,6 +28,8 @@ namespace JTLStudio.SDK.Tests.Fakes
         public bool PauseAudio { get; set; } = true;
         public bool DisableEventSystemOnPause { get; set; } = true;
         public bool ShowCursorOnPause { get; set; } = true;
+        public bool PauseRendering { get; set; } = true;
+        public bool BlockInputOnPause { get; set; } = true;
         public List<ProductDefinition> Products { get; } = new List<ProductDefinition>();
         public List<Language> SupportedLanguages { get; } = new List<Language> { Language.English, Language.Russian };
 
@@ -59,6 +61,8 @@ namespace JTLStudio.SDK.Tests.Fakes
             settings.PauseAudio = PauseAudio;
             settings.DisableEventSystemOnPause = DisableEventSystemOnPause;
             settings.ShowCursorOnPause = ShowCursorOnPause;
+            settings.PauseRendering = PauseRendering;
+            settings.BlockInputOnPause = BlockInputOnPause;
             settings.LogLevel = LogLevel;
             settings.UsePrototypesInEditor = false;
             settings.SupportedLanguages.Clear();

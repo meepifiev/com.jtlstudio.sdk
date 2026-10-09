@@ -91,6 +91,8 @@ namespace JTLStudio.SDK.Editor.Toolkit.Localization
             Add("pause.whilePaused", "While paused", "Во время паузы");
             Add("pause.timeScale", "Stop Time.timeScale", "Останавливать Time.timeScale");
             Add("pause.audio", "Pause AudioListener", "Ставить на паузу AudioListener");
+            Add("pause.rendering", "Stop rendering", "Останавливать рендеринг");
+            Add("pause.input", "Block input", "Блокировать ввод");
             Add("pause.eventSystem", "Disable EventSystem", "Выключать EventSystem");
             Add("pause.cursor", "Show cursor", "Показывать курсор");
             Add("nav.audio", "Audio", "Звук");

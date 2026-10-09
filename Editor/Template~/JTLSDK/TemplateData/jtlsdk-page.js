@@ -4,6 +4,7 @@
   var body = document.body;
   var data = body.dataset;
   var canvas = document.getElementById("unity-canvas");
+  var inputBlock = document.getElementById("jtlsdk-input-block");
   var loader = document.getElementById("jtlsdk-loader");
   var progressFill = document.getElementById("jtlsdk-progress-fill");
   var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -109,6 +110,18 @@
       sendFirstFrameReady();
     }
   }
+
+  page.blockInput = function (blocked) {
+    if (inputBlock === null) {
+      return;
+    }
+
+    inputBlock.classList.toggle("jtlsdk-input-block--on", blocked);
+
+    if (blocked && typeof canvas.blur === "function") {
+      canvas.blur();
+    }
+  };
 
   function hideLoader() {
     loader.classList.add("jtlsdk-loader--hidden");

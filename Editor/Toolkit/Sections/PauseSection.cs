@@ -40,6 +40,8 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
             Card card = new Card { TitleKey = "pause.whilePaused" };
             card.Add(Effect("pause.timeScale", settings.PauseTimeScale, value => settings.PauseTimeScale = value));
             card.Add(Effect("pause.audio", settings.PauseAudio, value => settings.PauseAudio = value));
+            card.Add(Effect("pause.rendering", settings.PauseRendering, value => settings.PauseRendering = value));
+            card.Add(Effect("pause.input", settings.BlockInputOnPause, value => settings.BlockInputOnPause = value));
             card.Add(Effect("pause.eventSystem", settings.DisableEventSystemOnPause, value => settings.DisableEventSystemOnPause = value));
             card.Add(Effect("pause.cursor", settings.ShowCursorOnPause, value => settings.ShowCursorOnPause = value));
             return card;

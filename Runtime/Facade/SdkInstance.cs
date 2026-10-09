@@ -93,7 +93,7 @@ namespace JTLStudio.SDK
             _pause = new PauseService(platformProvider, pauseOnFocusLoss, _logger);
             _time = new TimeService(timeProvider, _pause, settings.PauseTimeScale, _logger);
             _audio = new AudioService(platformProvider, _pause, settings.PauseAudio, _logger);
-            _device = new DeviceService(platformProvider, _pause, settings.ShowCursorOnPause, settings.DisableEventSystemOnPause, _logger);
+            _device = new DeviceService(platformProvider, _pause, settings.ShowCursorOnPause, settings.DisableEventSystemOnPause, settings.PauseRendering, settings.BlockInputOnPause, _logger);
             _gameEvents = new GameEventsService(gameEventsProvider, _pause, _logger);
             _ads = new AdsService(adsProvider, _pause, _gameEvents, _logger);
             _data = new DataService(dataProvider, settings.AutosaveDelaySeconds, _logger, BackupStorage ?? new WebBackupStorage(), BackupKey(platformId));

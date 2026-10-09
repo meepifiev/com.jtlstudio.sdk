@@ -1,30 +1,38 @@
 using System;
 using System.Collections.Generic;
+using JTLStudio.SDK.Bridge;
 using JTLStudio.SDK.Providers;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace JTLStudio.SDK.Services
 {
     public class DeviceService : ModuleBase, IDevice
     {
         private const string EventSystemTypeName = "UnityEngine.EventSystems.EventSystem, UnityEngine.UI";
+        private const int PausedRenderFrameInterval = 100000;
 
         private readonly IPlatformProvider _platformProvider;
         private readonly PauseService _pause;
         private readonly bool _showCursorOnPause;
         private readonly bool _disableEventSystemOnPause;
+        private readonly bool _pauseRendering;
+        private readonly bool _blockInputOnPause;
+        private int _renderFrameInterval = 1;
         private bool _inputOverride;
         private readonly System.Type _eventSystemType = System.Type.GetType(EventSystemTypeName);
         private readonly List<Behaviour> _disabledEventSystems = new List<Behaviour>();
         private bool _cursorVisible = true;
         private CursorLockMode _cursorLock = CursorLockMode.None;
 
-        public DeviceService(IPlatformProvider platformProvider, PauseService pause, bool showCursorOnPause, bool disableEventSystemOnPause, SdkLogger logger) : base(logger)
+        public DeviceService(IPlatformProvider platformProvider, PauseService pause, bool showCursorOnPause, bool disableEventSystemOnPause, bool pauseRendering, bool blockInputOnPause, SdkLogger logger) : base(logger)
         {
             _platformProvider = platformProvider ?? throw new ArgumentNullException(nameof(platformProvider));
             _pause = pause ?? throw new ArgumentNullException(nameof(pause));
             _showCursorOnPause = showCursorOnPause;
             _disableEventSystemOnPause = disableEventSystemOnPause;
+            _pauseRendering = pauseRendering;
+            _blockInputOnPause = blockInputOnPause;
             _pause.Changed += OnPauseChanged;
         }
 
@@ -61,7 +69,9 @@ namespace JTLStudio.SDK.Services
         internal override void Dispose()
         {
             _pause.Changed -= OnPauseChanged;
+            RestoreRendering();
             RestoreEventSystems();
+            BlockInput(false);
         }
 
         private void Apply()
@@ -99,12 +109,46 @@ namespace JTLStudio.SDK.Services
 
             if (paused)
             {
+                BlockInput(true);
                 DisableEventSystems();
+                StopRendering();
             }
             else
             {
+                RestoreRendering();
                 RestoreEventSystems();
+                BlockInput(false);
+                Input.ResetInputAxes();
             }
+        }
+
+        private void BlockInput(bool blocked)
+        {
+            if (_blockInputOnPause)
+            {
+                WebInput.Block(blocked);
+            }
+        }
+
+        private void StopRendering()
+        {
+            if (_pauseRendering == false || OnDemandRendering.renderFrameInterval == PausedRenderFrameInterval)
+            {
+                return;
+            }
+
+            _renderFrameInterval = OnDemandRendering.renderFrameInterval;
+            OnDemandRendering.renderFrameInterval = PausedRenderFrameInterval;
+        }
+
+        private void RestoreRendering()
+        {
+            if (_pauseRendering == false)
+            {
+                return;
+            }
+
+            OnDemandRendering.renderFrameInterval = _renderFrameInterval;
         }
 
         private void DisableEventSystems()

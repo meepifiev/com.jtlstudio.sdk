@@ -110,3 +110,15 @@ img {
 .jtlsdk-dev-badge:empty {
   display: none;
 }
+
+.jtlsdk-input-block {
+  position: fixed;
+  inset: 0;
+  display: none;
+  background: transparent;
+  touch-action: none;
+}
+
+.jtlsdk-input-block--on {
+  display: block;
+}

@@ -39,6 +39,14 @@ var JTLSDKLibrary = {
         return buffer;
     },
 
+    JTLSDK_BlockInput: function (blocked) {
+        var page = window.JTLSDK_PAGE;
+
+        if (page && typeof page.blockInput === 'function') {
+            page.blockInput(blocked === 1);
+        }
+    },
+
     JTLSDK_WriteBackup: function (keyPointer, valuePointer) {
         try {
             window.localStorage.setItem(UTF8ToString(keyPointer), UTF8ToString(valuePointer));

@@ -22,6 +22,8 @@ namespace JTLStudio.SDK
         [SerializeField] private bool _pauseAudio = true;
         [SerializeField] private bool _disableEventSystemOnPause = true;
         [SerializeField] private bool _showCursorOnPause = true;
+        [SerializeField] private bool _pauseRendering = true;
+        [SerializeField] private bool _blockInputOnPause = true;
 
         public SdkConfiguration ActiveConfiguration
         {
@@ -75,6 +77,18 @@ namespace JTLStudio.SDK
         {
             get => _disableEventSystemOnPause;
             internal set => _disableEventSystemOnPause = value;
+        }
+
+        public bool PauseRendering
+        {
+            get => _pauseRendering;
+            internal set => _pauseRendering = value;
+        }
+
+        public bool BlockInputOnPause
+        {
+            get => _blockInputOnPause;
+            internal set => _blockInputOnPause = value;
         }
 
         public bool ShowCursorOnPause
