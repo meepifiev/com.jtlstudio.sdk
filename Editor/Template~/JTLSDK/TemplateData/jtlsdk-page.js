@@ -42,17 +42,32 @@
     return width > 0 && height > 0 ? width / height : 0;
   }
 
+  function fillsViewport(aspect, width, height) {
+    if (aspect <= 0) {
+      return true;
+    }
+
+    if (aspect < 1) {
+      return width <= height;
+    }
+
+    if (aspect > 1) {
+      return width >= height;
+    }
+
+    return width === height;
+  }
+
   function fitCanvas() {
     var aspect = isMobile && data.aspectMobile === "free" ? 0 : parseAspect(data.aspect);
+    var width = window.innerWidth;
+    var height = window.innerHeight;
 
-    if (aspect <= 0) {
+    if (fillsViewport(aspect, width, height)) {
       canvas.style.width = "100%";
       canvas.style.height = "100%";
       return;
     }
-
-    var width = window.innerWidth;
-    var height = window.innerHeight;
 
     if (width / height > aspect) {
       width = Math.round(height * aspect);

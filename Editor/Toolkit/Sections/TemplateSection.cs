@@ -191,6 +191,7 @@ namespace JTLStudio.SDK.Editor.Toolkit.Sections
                 TextField ratio = TextInput(Settings.AspectRatio, value => Settings.AspectRatio = value);
                 ratio.style.maxWidth = NumberWidth;
                 card.Add(Field("template.aspectRatio", ratio));
+                card.Add(Localized("template.aspectHint", "jtl-text--caption"));
                 card.Add(Field("template.freeOnMobile", Switch(Settings.FreeAspectOnMobile, value => Update(() => Settings.FreeAspectOnMobile = value))));
                 card.Add(Field("template.pageAsLoader", Switch(Settings.PageUsesLoaderBackground, value => Rebuild(() => Settings.PageUsesLoaderBackground = value))));
             }

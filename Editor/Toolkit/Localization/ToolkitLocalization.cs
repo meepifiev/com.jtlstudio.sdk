@@ -214,6 +214,7 @@ namespace JTLStudio.SDK.Editor.Toolkit.Localization
             Add("template.fixedAspect", "Fixed aspect ratio", "Фиксированные пропорции");
             Add("template.aspectRatio", "Aspect ratio", "Пропорции");
             Add("template.freeOnMobile", "Free on mobile", "Свободно на мобильных");
+            Add("template.aspectHint", "The ratio is kept only when the window shape contradicts it: a portrait game fills a portrait window and is centred with side bars in a landscape one.", "Пропорции держатся только когда форма окна им противоречит: портретная игра заполняет портретное окно, а в ландшафтном центрируется с полями по бокам.");
             Add("template.pageAsLoader", "Page as loading screen", "Фон страницы как у загрузки");
             Add("template.pixelRatioDesktop", "Pixel ratio · desktop", "Pixel ratio · десктоп");
             Add("template.pixelRatioMobile", "Pixel ratio · mobile", "Pixel ratio · мобильные");

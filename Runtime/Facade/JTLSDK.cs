@@ -5,7 +5,7 @@ namespace JTLStudio.SDK
 {
     public static class JTLSDK
     {
-        public const string Version = "1.4.2";
+        public const string Version = "1.5.0";
 
         private const string NotCreated = "JTLSDK.Create() must run before the SDK is used.";
 
