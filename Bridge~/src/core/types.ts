@@ -15,6 +15,7 @@ export interface PlatformAdapter {
   readonly name: string;
   readonly modules: Record<string, ModuleAdapter>;
   bind(emit: EventEmitter): void;
+  watchHiding?(notify: () => void): void;
 }
 
 export const ResultCode = {

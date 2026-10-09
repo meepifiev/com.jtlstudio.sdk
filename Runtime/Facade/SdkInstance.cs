@@ -18,6 +18,7 @@ namespace JTLStudio.SDK
         private readonly SdkLogger _logger;
         private readonly List<ModuleBase> _modules = new List<ModuleBase>();
         private readonly List<Action> _readyCallbacks = new List<Action>();
+        private readonly IPlatformProvider _platformProvider;
         private readonly PlatformService _platform;
         private readonly PauseService _pause;
         private readonly TimeService _time;
@@ -88,6 +89,7 @@ namespace JTLStudio.SDK
             }
 #endif
 
+            _platformProvider = platformProvider;
             _pause = new PauseService(platformProvider, pauseOnFocusLoss, _logger);
             _time = new TimeService(timeProvider, _pause, settings.PauseTimeScale, _logger);
             _audio = new AudioService(platformProvider, _pause, settings.PauseAudio, _logger);
@@ -95,6 +97,7 @@ namespace JTLStudio.SDK
             _gameEvents = new GameEventsService(gameEventsProvider, _pause, _logger);
             _ads = new AdsService(adsProvider, _pause, _gameEvents, _logger);
             _data = new DataService(dataProvider, settings.AutosaveDelaySeconds, _logger, BackupStorage ?? new WebBackupStorage(), BackupKey(platformId));
+            _platformProvider.PauseRequested += OnPlatformPauseRequested;
             _player = new PlayerService(playerProvider, _data, _logger);
             _payments = new PaymentsService(paymentsProvider, _data, _pause, settings.Products, platformId, _logger);
             _language = new LanguageService(languageProvider, settings, configuration, _logger);
@@ -247,6 +250,14 @@ namespace JTLStudio.SDK
             }
         }
 
+        private void OnPlatformPauseRequested(bool paused)
+        {
+            if (paused)
+            {
+                _data.SaveIfDirty();
+            }
+        }
+
         internal void HandleApplicationFocus(bool hasFocus)
         {
             _pause.HandleApplicationFocus(hasFocus);
@@ -292,6 +303,7 @@ namespace JTLStudio.SDK
             }
 
             _readyCallbacks.Clear();
+            _platformProvider.PauseRequested -= OnPlatformPauseRequested;
             _bridge.EventReceived -= OnBridgeEvent;
             _bridge.Disconnect();
 

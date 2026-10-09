@@ -185,6 +185,14 @@ export class YandexPlatform implements PlatformAdapter {
     this.emit = emit;
   }
 
+  public watchHiding(notify: () => void): void {
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        notify();
+      }
+    });
+  }
+
   private sdk(): Promise<YandexSdk> {
     if (this.sdkPromise !== null) {
       return this.sdkPromise;

@@ -128,26 +128,23 @@ export class Bridge {
   }
 }
 
-function watchPageHiding(bridge: Bridge): void {
+function watchPageHiding(bridge: Bridge, platform: PlatformAdapter): void {
   if (typeof document === "undefined" || typeof window === "undefined") {
     return;
   }
 
   const notify = (): void => bridge.event(EventCode.PageHiding, {});
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-      notify();
-    }
-  });
-
   window.addEventListener("pagehide", notify);
+
+  if (platform.watchHiding !== undefined) {
+    platform.watchHiding(notify);
+  }
 }
 
 export function install(platform: PlatformAdapter): Bridge {
   const bridge = new Bridge(platform);
   platform.bind((code, payload) => bridge.event(code, payload));
-  watchPageHiding(bridge);
+  watchPageHiding(bridge, platform);
   Module.JTLSDKBridges = Module.JTLSDKBridges ?? {};
   Module.JTLSDKBridges[platform.name] = bridge;
   return bridge;

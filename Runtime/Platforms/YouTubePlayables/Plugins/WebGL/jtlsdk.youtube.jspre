@@ -184,23 +184,21 @@
       return new BridgeError(ResultCode.Unknown, message);
     }
   };
-  function watchPageHiding(bridge) {
+  function watchPageHiding(bridge, platform) {
     if (typeof document === "undefined" || typeof window === "undefined") {
       return;
     }
     const notify = () => bridge.event(EventCode.PageHiding, {});
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "hidden") {
-        notify();
-      }
-    });
     window.addEventListener("pagehide", notify);
+    if (platform.watchHiding !== void 0) {
+      platform.watchHiding(notify);
+    }
   }
   function install(platform) {
     var _a;
     const bridge = new Bridge(platform);
     platform.bind((code, payload) => bridge.event(code, payload));
-    watchPageHiding(bridge);
+    watchPageHiding(bridge, platform);
     Module.JTLSDKBridges = (_a = Module.JTLSDKBridges) != null ? _a : {};
     Module.JTLSDKBridges[platform.name] = bridge;
     return bridge;
