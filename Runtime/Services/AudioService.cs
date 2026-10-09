@@ -57,6 +57,12 @@ namespace JTLStudio.SDK.Services
         internal override void Initialize()
         {
             Apply();
+
+            if (IsPlatformMuted)
+            {
+                Logger.Info("Platform audio is disabled, the game stays silent until the platform enables it.");
+            }
+
             SetState(ModuleState.Ready);
         }
 
@@ -83,6 +89,7 @@ namespace JTLStudio.SDK.Services
         private void OnPlatformMuteChanged(bool muted)
         {
             Apply();
+            Logger.Info(muted ? "Platform audio is disabled." : "Platform audio is enabled.");
             PlatformMuteChanged?.Invoke(muted);
         }
     }

@@ -300,8 +300,14 @@
       }
       this.eventsBound = true;
       sdk.system.onPause(() => this.emit(EventCode.Pause, {}));
-      sdk.system.onResume(() => this.emit(EventCode.Resume, {}));
+      sdk.system.onResume(() => {
+        this.emit(EventCode.Resume, {});
+        this.reportAudio(sdk);
+      });
       sdk.system.onAudioEnabledChange((enabled) => this.emit(EventCode.MuteChanged, { muted: enabled === false }));
+    }
+    reportAudio(sdk) {
+      this.emit(EventCode.MuteChanged, { muted: sdk.system.isAudioEnabled() === false });
     }
     async initializePlatform() {
       const sdk = this.sdk();
@@ -335,6 +341,7 @@
         this.gameReadySent = true;
         sdk.game.gameReady();
       }
+      this.reportAudio(sdk);
       return {};
     }
     detectDeviceType() {

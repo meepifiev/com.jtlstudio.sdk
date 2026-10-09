@@ -100,8 +100,15 @@ export class YouTubePlatform implements PlatformAdapter {
 
     this.eventsBound = true;
     sdk.system.onPause(() => this.emit(EventCode.Pause, {}));
-    sdk.system.onResume(() => this.emit(EventCode.Resume, {}));
+    sdk.system.onResume(() => {
+      this.emit(EventCode.Resume, {});
+      this.reportAudio(sdk);
+    });
     sdk.system.onAudioEnabledChange((enabled) => this.emit(EventCode.MuteChanged, { muted: enabled === false }));
+  }
+
+  private reportAudio(sdk: YouTubeSdk): void {
+    this.emit(EventCode.MuteChanged, { muted: sdk.system.isAudioEnabled() === false });
   }
 
   private async initializePlatform(): Promise<unknown> {
@@ -143,6 +150,7 @@ export class YouTubePlatform implements PlatformAdapter {
       sdk.game.gameReady();
     }
 
+    this.reportAudio(sdk);
     return {};
   }
 
