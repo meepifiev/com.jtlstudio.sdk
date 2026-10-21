@@ -305,6 +305,17 @@
         this.reportAudio(sdk);
       });
       sdk.system.onAudioEnabledChange((enabled) => this.emit(EventCode.MuteChanged, { muted: enabled === false }));
+      if (typeof document !== "undefined") {
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") {
+            this.reportAudio(sdk);
+          }
+        });
+      }
+      if (typeof window !== "undefined") {
+        window.addEventListener("pageshow", () => this.reportAudio(sdk));
+        window.addEventListener("focus", () => this.reportAudio(sdk));
+      }
     }
     reportAudio(sdk) {
       this.emit(EventCode.MuteChanged, { muted: sdk.system.isAudioEnabled() === false });

@@ -47,35 +47,7 @@ var JTLSDKLibrary = {
         }
     },
 
-    JTLSDK_WriteBackup: function (keyPointer, valuePointer) {
-        try {
-            window.localStorage.setItem(UTF8ToString(keyPointer), UTF8ToString(valuePointer));
-        } catch (error) {
-            console.warn('[JTL SDK] The save backup was not written.', error);
-        }
-    },
 
-    JTLSDK_ReadBackup: function (keyPointer) {
-        var value = '';
-
-        try {
-            value = window.localStorage.getItem(UTF8ToString(keyPointer)) || '';
-        } catch (error) {
-            value = '';
-        }
-
-        var size = lengthBytesUTF8(value) + 1;
-        var buffer = _malloc(size);
-        stringToUTF8(value, buffer, size);
-        return buffer;
-    },
-
-    JTLSDK_ClearBackup: function (keyPointer) {
-        try {
-            window.localStorage.removeItem(UTF8ToString(keyPointer));
-        } catch (error) {
-        }
-    }
 };
 
 mergeInto(LibraryManager.library, JTLSDKLibrary);

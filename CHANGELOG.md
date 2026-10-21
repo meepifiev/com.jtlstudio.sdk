@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.7.0] - 2026-10-21
+
+### Changed
+
+- На YouTube состояние звука перечитывается при возврате на вкладку: мост слушает `visibilitychange` (на видимой странице), `pageshow` и `focus` окна и переспрашивает `ytgame.system.isAudioEnabled()`. Так звук восстанавливается, если площадка включила его, пока вкладку не смотрели, как в Playgama Bridge. `visibilitychange` в бандле YouTube снова присутствует, поэтому проверка сертификации YouTube опять отметит Page Visibility API предупреждением.
+
+### Removed
+
+- Убран локальный бэкап сейва в `localStorage`. SDK хранит сейв только на площадке. Удалены `IBackupStorage`, `WebBackupStorage`, `WebStorage` и jslib-функции `JTLSDK_WriteBackup` / `ReadBackup` / `ClearBackup`; `SdkInstance.BackupStorage` больше нет. Сохранение перед скрытием вкладки и по платформенной паузе осталось, но без резервной копии: при обрыве последней записи теряются изменения после последнего успешного сохранения на площадку.
+
 ## [1.6.1] - 2026-10-09
 
 ### Fixed

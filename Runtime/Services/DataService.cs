@@ -18,8 +18,6 @@ namespace JTLStudio.SDK.Services
         private const string ValuesKey = "values";
 
         private readonly IDataProvider _provider;
-        private readonly IBackupStorage _backup;
-        private readonly string _backupKey;
         private readonly float _autosaveDelaySeconds;
         private readonly List<Action<bool>> _queuedCallbacks = new List<Action<bool>>();
         private readonly JsonWriter _writer = new JsonWriter();
@@ -35,12 +33,10 @@ namespace JTLStudio.SDK.Services
         private bool _oversizeLogged;
         private bool _autosaveRequested;
 
-        public DataService(IDataProvider provider, float autosaveDelaySeconds, SdkLogger logger, IBackupStorage backup = null, string backupKey = "") : base(logger)
+        public DataService(IDataProvider provider, float autosaveDelaySeconds, SdkLogger logger) : base(logger)
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
             _autosaveDelaySeconds = Mathf.Max(0f, autosaveDelaySeconds);
-            _backup = backup;
-            _backupKey = string.IsNullOrEmpty(backupKey) ? "JTLSDK.Backup" : backupKey;
         }
 
         public event Action Loaded;
@@ -294,7 +290,6 @@ namespace JTLStudio.SDK.Services
                 return;
             }
 
-            WriteBackup();
             Save(null);
         }
 
@@ -333,96 +328,11 @@ namespace JTLStudio.SDK.Services
         private void OnLoaded(DataLoadResult result, string serialized)
         {
             ApplyLoadResult(result, serialized);
-            bool restored = TryRestoreBackup();
             Logger.Info("Save data is " + LoadState + ", " + _values.Count + " keys.");
             SetState(ModuleState.Ready);
-
-            if (restored)
-            {
-                MarkDirty();
-                Save(null);
-            }
-
             Loaded?.Invoke();
         }
 
-        private bool TryRestoreBackup()
-        {
-            if (_backup == null || (LoadState != DataState.Loaded && LoadState != DataState.Empty))
-            {
-                return false;
-            }
-
-            string stored = ReadBackup();
-
-            if (string.IsNullOrEmpty(stored))
-            {
-                return false;
-            }
-
-            Dictionary<string, object> loadedValues = _values;
-            long loadedRevision = _revision;
-
-            if (TryParseDocument(stored) == false || _revision <= loadedRevision)
-            {
-                _values = loadedValues;
-                _revision = loadedRevision;
-                ClearBackup();
-                return false;
-            }
-
-            Logger.Info("Save data was restored from the local backup: revision " + _revision + " over " + loadedRevision + ".");
-            _revision = loadedRevision;
-            LoadState = DataState.Loaded;
-            return true;
-        }
-
-        private void WriteBackup()
-        {
-            if (_backup == null)
-            {
-                return;
-            }
-
-            try
-            {
-                _backup.Write(_backupKey, SerializeDocument(_revision + 1));
-            }
-            catch (Exception exception)
-            {
-                Logger.Exception(exception);
-            }
-        }
-
-        private string ReadBackup()
-        {
-            try
-            {
-                return _backup.Read(_backupKey);
-            }
-            catch (Exception exception)
-            {
-                Logger.Exception(exception);
-                return "";
-            }
-        }
-
-        private void ClearBackup()
-        {
-            if (_backup == null)
-            {
-                return;
-            }
-
-            try
-            {
-                _backup.Clear(_backupKey);
-            }
-            catch (Exception exception)
-            {
-                Logger.Exception(exception);
-            }
-        }
 
         private void OnRetryLoaded(DataLoadResult result, string serialized)
         {
@@ -559,8 +469,6 @@ namespace JTLStudio.SDK.Services
                     IsDirty = false;
                     _autosaveRequested = false;
                 }
-
-                ClearBackup();
             }
             else
             {

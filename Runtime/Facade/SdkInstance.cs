@@ -96,7 +96,7 @@ namespace JTLStudio.SDK
             _device = new DeviceService(platformProvider, _pause, settings.ShowCursorOnPause, settings.DisableEventSystemOnPause, settings.PauseRendering, settings.BlockInputOnPause, _logger);
             _gameEvents = new GameEventsService(gameEventsProvider, _pause, _logger);
             _ads = new AdsService(adsProvider, _pause, _gameEvents, _logger);
-            _data = new DataService(dataProvider, settings.AutosaveDelaySeconds, _logger, BackupStorage ?? new WebBackupStorage(), BackupKey(platformId));
+            _data = new DataService(dataProvider, settings.AutosaveDelaySeconds, _logger);
             _platformProvider.PauseRequested += OnPlatformPauseRequested;
             _player = new PlayerService(playerProvider, _data, _logger);
             _payments = new PaymentsService(paymentsProvider, _data, _pause, settings.Products, platformId, _logger);
@@ -130,8 +130,6 @@ namespace JTLStudio.SDK
                 module.StateChanged += OnModuleStateChanged;
             }
         }
-
-        internal static IBackupStorage BackupStorage { get; set; }
 
         public bool IsReady { get; private set; }
 
@@ -230,11 +228,6 @@ namespace JTLStudio.SDK
 
             _data.Tick(unscaledDeltaTime);
             _payments.Tick(unscaledDeltaTime);
-        }
-
-        private static string BackupKey(PlatformId platform)
-        {
-            return "JTLSDK.Backup." + platform + "." + Application.productName;
         }
 
         private void OnBridgeEvent(BridgeEventCode code, BridgeResponse response)
