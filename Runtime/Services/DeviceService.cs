@@ -162,6 +162,11 @@ namespace JTLStudio.SDK.Services
             {
                 if (found is Behaviour eventSystem && eventSystem.enabled)
                 {
+                    if (eventSystem.GetComponent<Prototype.SimulationEventSystemTag>() != null)
+                    {
+                        continue;
+                    }
+
                     eventSystem.enabled = false;
                     _disabledEventSystems.Add(eventSystem);
                 }

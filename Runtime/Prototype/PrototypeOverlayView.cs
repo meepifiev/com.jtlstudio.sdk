@@ -16,6 +16,7 @@ namespace JTLStudio.SDK.Prototype
         private static PrototypeOverlayView instance;
 
         private Canvas _canvas;
+        private EventSystem _eventSystem;
         private RectTransform _card;
         private RectTransform _options;
         private RectTransform _viewport;
@@ -92,6 +93,11 @@ namespace JTLStudio.SDK.Prototype
 
             gameObject.AddComponent<GraphicRaycaster>();
 
+            _eventSystem = gameObject.AddComponent<EventSystem>();
+            gameObject.AddComponent<StandaloneInputModule>();
+            gameObject.AddComponent<SimulationEventSystemTag>();
+            _eventSystem.enabled = false;
+
             Image backdrop = Create("Backdrop", transform).gameObject.AddComponent<Image>();
             backdrop.color = new Color(0.02f, 0.03f, 0.06f, 0.88f);
             Fill(backdrop.rectTransform);
@@ -149,6 +155,11 @@ namespace JTLStudio.SDK.Prototype
             _title.text = title;
             _canvas.enabled = true;
 
+            if (_eventSystem != null)
+            {
+                _eventSystem.enabled = true;
+            }
+
             foreach (GameObject option in _optionRows)
             {
                 Destroy(option);
@@ -181,9 +192,20 @@ namespace JTLStudio.SDK.Prototype
             }
 
             RectTransform canvasRect = (RectTransform)_canvas.transform;
+
+            if (canvasRect.rect.width <= 1f || canvasRect.rect.height <= 1f)
+            {
+                return;
+            }
+
             float availableWidth = Mathf.Max(220f, canvasRect.rect.width - ScreenMargin * 2f);
             float availableHeight = Mathf.Max(180f, canvasRect.rect.height - ScreenMargin * 2f);
             float optionsHeight = LayoutUtility.GetPreferredHeight(_options);
+
+            if (optionsHeight <= 1f)
+            {
+                return;
+            }
             float extra = LayoutUtility.GetPreferredHeight(_title.rectTransform) + (_remember != null ? 28f : 0f) + 60f;
             float height = Mathf.Min(availableHeight, optionsHeight + extra);
 
@@ -206,6 +228,11 @@ namespace JTLStudio.SDK.Prototype
             if (_canvas != null)
             {
                 _canvas.enabled = false;
+            }
+
+            if (_eventSystem != null)
+            {
+                _eventSystem.enabled = false;
             }
 
             PrototypeInput.Release();
