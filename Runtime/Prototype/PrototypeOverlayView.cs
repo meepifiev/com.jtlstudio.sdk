@@ -157,7 +157,7 @@ namespace JTLStudio.SDK.Prototype
 
             if (_eventSystem != null)
             {
-                _eventSystem.enabled = true;
+                _eventSystem.enabled = HasOtherActiveEventSystem() == false;
             }
 
             foreach (GameObject option in _optionRows)
@@ -182,6 +182,19 @@ namespace JTLStudio.SDK.Prototype
             _remember.transform.SetAsLastSibling();
             _remember.isOn = false;
             PrototypeInput.Hold();
+        }
+
+        private bool HasOtherActiveEventSystem()
+        {
+            foreach (EventSystem system in FindObjectsOfType<EventSystem>())
+            {
+                if (system != _eventSystem && system.isActiveAndEnabled)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void LateUpdate()
